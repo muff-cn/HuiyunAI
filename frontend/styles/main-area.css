@@ -1,0 +1,303 @@
+.main-content-container {
+    height: 90vh;
+    width: 70vw;
+    margin-left: 5vw;
+    margin-right: 30vw;
+    border-radius: 15px;
+    /* 移除opacity属性，改为使用半透明背景色 */
+    /* opacity: 0.9; */
+    /* 使用rgba颜色值代替solid颜色，保持背景半透明但不影响子元素 */
+    /*background-color: rgba(10, 14, 23, 0.9); !* #0A0E17的rgba值，透明度0.9 *!*/
+    /*background-color: #0A0E17;*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.main-area {
+    /*opacity: 1;*/
+    height: 45%;
+    width: 90%;
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    /*align-items: center;*/
+    /*justify-content: center;*/
+    background-color: #1F1D34;
+    border-radius: 20px;
+
+}
+
+.main-area-info-header {
+    text-align: left;
+    font-size: 15px;
+    font-weight: 600;
+    width: 100%;
+    height: 10%;
+    line-height: 10%;
+    background-color: #34324C;
+    border-radius: 20px 20px 0 0;
+    color: #fff;
+    padding-left: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.weather-main-info {
+    height: 90%;
+    width: 100%;
+    padding: 20px 50px;
+    display: flex;
+    flex-direction: column;
+    /*align-items: center;*/
+    /*justify-content: center;*/
+}
+.basic-weather-info {
+    color: white;
+    display: flex;
+    /*margin-bottom: 20px;*/
+}
+
+.basic-weather-info > i {
+    font-size: 100px;
+}
+
+.basic-weather-info > .temp {
+    width: 100px;
+    height: 100px;
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 100px;
+    text-align: center;
+    margin-left: 30px;
+}
+.basic-weather-info > .weather-condition {
+    padding-top: 30px;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 30px;
+    text-align: center;
+    margin-left: 30px;
+
+}
+.basic-weather-info > .time {
+    font-size: 16px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.7);
+    /*line-height: 100px;*/
+    /*text-align: center;*/
+    margin-left: auto;
+}
+.ai-weather {
+    margin: 30px 0 40px 0;
+}
+.ai-weather > button {
+    width: 200px;
+    height: 40px;
+    border-radius: 20px;
+    border: none;
+    background: linear-gradient(to right, #0277bd, #003c8f);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+.ai-weather > button:hover {
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+.weather-box {
+    /*margin-top: 20px;*/
+    display: flex;
+    justify-content: space-between;
+}
+.weather-item {
+    width: 50px;
+    height: 50px;
+    /*background-color: #fff;*/
+    color: white;
+    /*border-right: 1px solid rgba(255, 255, 255, 0.3);*/
+}
+
+.astronomy-main-info {
+    height: 90%;
+    width: 100%;
+    display: flex;
+    /*flex-direction: column;*/
+    /*align-items: center;*/
+    /*justify-content: center;*/
+    color: white;
+}
+
+.astron-card {
+    height: 100%;
+    width: 50%;
+}
+
+.astron-left {
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 50px 50px;
+}
+.astron-index {
+    display: flex;
+    flex-direction: column;
+    width: 180px;
+    height: 180px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+.astron-index > .index-title{
+    height: 20%;
+    /*background-color: #26243C;*/
+    border-radius: 20px 20px 0 0;
+    text-align: center;
+    line-height: 36px;
+}
+.astron-index > .index-value{
+    height: 80%;
+    width: 180px;
+    font-size: 90px;
+    font-weight: 600;
+    line-height: 120px;
+    text-align: center;
+
+}
+.astron-index > .index-value > span {
+    font-size: 40px;
+}
+
+.aston-left-top {
+    display: flex;
+
+}
+.astron-index-level-box {
+    margin-left: 100px;
+    height: 150px;
+    width: 150px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.astron-index-level {
+    height: 50px;
+    width: 100px;
+    border-radius: 25px;
+    background-color: #425B5F;
+    color: #7BD589;
+    font-size: 20px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 50px;
+}
+.astron-left-bottom {
+    margin-top: 30px;
+    display: flex;
+}
+.astron-left-bottom > button {
+    width: 200px;
+    height: 40px;
+    border-radius: 20px;
+    border: none;
+    background: linear-gradient(to right, #7b1fa2, #311b92);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+.astron-left-bottom > button:hover {
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+.stellarium {
+    margin-left: 100px;
+    width: 100px;
+    height: 40px;
+    border-radius: 20px;
+    border: none;
+    /*background: linear-gradient(to right, #7b1fa2, #311b92);*/
+    background: #311b92;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+.stellarium:hover {
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+.astron-right {
+    padding: 30px 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+
+}
+.astron-right-card {
+    height: 120px;
+    width: 120px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    margin-right: 20px;
+    padding-top: 10px;
+    text-align: center;
+}
+.astron-right-card:hover {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+.astron-right-card:nth-child(1) {
+    background-color: #2B2C4C;
+    /*opacity: 1;*/
+}
+.astron-right-card:nth-child(2) {
+    background-color: #393154;
+}
+.astron-right-card:nth-child(3) {
+    background-color: #4A3154;
+}
+
+.astron-index-card {
+    padding-top: 15px;
+}
+
+.astron-index-card > .index-data {
+    font-size: 30px;
+}
+.astron-index-card > div {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.index-level {
+    width: 50px;
+    height: 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    text-align: center;
+    line-height: 20px;
+}
+.today-index-level {
+    background-color: #425B5F;
+    color: #7BD589;
+}
+.tomorrow-index-level {
+    background-color: #64595C;
+    color: #F5E2A0;
+}
+.two-days-index-level {
+    background-color: #623E55;
+    color: #F0626A;
+}

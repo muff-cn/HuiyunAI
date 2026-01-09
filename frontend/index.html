@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>慧云AI</title>
+    <link rel="icon" href="imgs/icon.svg" type="image/svg+xml"/>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,1,0"/>
+    <link rel="stylesheet" href="styles/style.css"/>
+    <link rel="stylesheet" href="styles/bg.css"/>
+    <link rel="stylesheet" href="styles/main-area.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/qweather-icons@1.8.0/font/qweather-icons.css" rel="stylesheet">
+</head>
+<body>
+<nav>
+    <div class="present-city">
+        <img src="imgs/loc.svg" alt="loc" width="20" height="20">
+        <span id="city-name">深圳</span>
+    </div>
+    <label>
+        <input type="text" placeholder="请输入城市..." id="city-input">
+
+    </label>
+    <div class="search-icon">
+        <img src="imgs/search-icon.svg" alt="" width="25" height="25" style="margin-left: 10px;"/>
+    </div>
+    <div class="function-links">
+        <a href="index.html">首页</a>
+        <a href="#">关于</a>
+        <a href="#">数据</a>
+    </div>
+    <div class="logo">
+        <a href="index.html">
+            <img src="imgs/icon.svg" alt="logo" height="50"/>
+            <div>彗云AI</div>
+        </a>
+    </div>
+    <div class="school-logo" onclick="jumpToLink('https://www.sztu.edu.cn/')">
+        <img src="https://www.sztu.edu.cn/images/logo2.png" alt=""></div>
+    <!--    <hr>-->
+</nav>
+<div class="star-layers">
+    <!-- 5层星空容器，对应视频中的"五层星星" -->
+    <div class="star-layer-1"></div>
+    <div class="star-layer-2"></div>
+    <div class="star-layer-3"></div>
+    <div class="star-layer-4"></div>
+    <div class="star-layer-5"></div>
+</div>
+<div class="main-container">
+    <!--    <div class="side-container">-->
+    <!--    </div>-->
+    <div class="main-content-container">
+        <div class="weather-area main-area">
+            <div class="main-area-info-header">
+                <img src="./imgs/weather-icon.svg" alt="" width="30" height="30">
+                <span>&nbsp;&nbsp;当前天气</span>
+            </div>
+            <div class="weather-main-info">
+                <div class="basic-weather-info">
+                    <i class="qi-100-fill" id="weather-icon"></i>
+                    <div class="temp" id="temp">14°C</div>
+                    <div class="weather-condition" id="weather-condition">
+                        晴朗 <br>
+                        <span class="day-temp">9 ~ 17 °C</span>
+                    </div>
+                    <div class="time" id="time">2023-12-20 14:00</div>
+                </div>
+                <!--                <hr>-->
+                <div class="ai-weather">
+                    <button id="ai-consult-weather">
+                        <img src="./imgs/ai-weather-icon.svg" alt="" height="30" width="30">
+                        <span>AI天气与出行信息</span>
+                    </button>
+                </div>
+
+                <div class="detailed-weather-info">
+                    <div class="weather-box">
+                        <div class="weather-item">
+                            <div class="weather-item-label">湿度</div>
+                            <div class="humidity" id="humidity">60%</div>
+                        </div>
+                        <div class="weather-item">
+                            <div class="weather-item-label">气压</div>
+                            <div class="air-pressure" id="air-pressure">1013hPa</div>
+                        </div>
+                        <div class="weather-item">
+                            <div class="weather-item-label">能见度</div>
+                            <div class="visibility" id="visibility">10km</div>
+                        </div>
+                        <div class="weather-item">
+                            <div class="weather-item-label">风速</div>
+                            <div class="wind-speed" id="wind-speed">3m/s</div>
+                        </div>
+                        <div class="weather-item">
+                            <div class="weather-item-label">风向</div>
+                            <div class="wind-direction" id="wind-direction">北风</div>
+                        </div>
+                        <div class="weather-item">
+                            <div class="weather-item-label">云量</div>
+                            <div class="cloudiness" id="cloudiness">2%</div>
+                        </div>
+                        <div class="weather-item">
+                            <div class="weather-item-label">紫外线</div>
+                            <div class="uv-index" id="uv-index">3</div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="astronomy-area main-area">
+            <div class="main-area-info-header">
+                <img src="./imgs/astronomy-icon.svg" alt="" width="30" height="30">
+                <span>&nbsp;&nbsp;天文信息</span>
+            </div>
+            <div class="astronomy-main-info">
+                <div class="astron-left astron-card">
+                    <div class="aston-left-top">
+                        <div class="astron-index">
+                            <div class="index-title">观星指数</div>
+                            <div class="index-value" id="observing-index">95<span> %</span></div>
+
+                        </div>
+                        <div class="astron-index-level-box">
+                            <div class="astron-index-level" id="observing-index-level">极佳</div>
+                        </div>
+                    </div>
+                    <div class="astron-left-bottom">
+
+                        <button id="ai-consult-astronomy">
+                            <img src="./imgs/ai-astronomy-icon.svg" alt="" height="30" width="30">
+                            <span>AI天文与观星信息</span>
+                        </button>
+                        <div class="stellarium">
+                            <a href="https://stellarium-web.org/" target="_blank">星空地图</a>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="astron-right astron-card">
+                    <div class="astron-right-card">
+                        <a href="https://www.darkmap.cn/ " target="_blank">
+
+                            <img src="./imgs/darkness-map-icon.svg" alt="" width="50" height="50">
+                            <br>光污染地图</a>
+                    </div>
+                    <div class="astron-right-card">
+                        <a href="https://zoom.earth/maps/satellite/" target="_blank">
+
+                            <img src="./imgs/satellite-map-icon.svg" alt="" width="50" height="50">
+                            <br>卫星云图</a>
+                    </div>
+                    <div class="astron-right-card">
+                        <a href="https://www.meteoblue.com/en/weather/outdoorsports/seeing" target="_blank">
+
+                            <img src="./imgs/seeing-icon.svg" alt="" width="50" height="50">
+                            <br>视宁度</a>
+                    </div>
+
+
+                    <div class="astron-right-card astron-index-card today-index">
+                        <span>今日夜晚</span> <br>
+                        <span class="index-data" id="today-observing-index">95</span><span>%</span>
+                        <div>
+                            <div class="today-index-level index-level" id="today-observing-index-level">极佳</div>
+                        </div>
+                    </div>
+                    <div class="astron-right-card astron-index-card tomorrow-index">
+                        <span>明日夜晚</span> <br>
+                        <span class="index-data" id="tomorrow-observing-index">73</span><span>%</span>
+                        <div>
+                            <div class="tomorrow-index-level index-level" id="tomorrow-observing-index-level">一般</div>
+                        </div>
+                    </div>
+                    <div class="astron-right-card astron-index-card two-days-index">
+                        <span>后日夜晚</span> <br>
+                        <span class="index-data" id="two-days-observing-index">31</span><span>%</span>
+                        <div>
+                            <div class="two-days-index-level index-level" id="two-days-observing-index-level">糟糕</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 侧边栏    -->
+<div class="side-container">
+    <div class="info-header">月相与光污染</div>
+    <div class="moon-and-light">
+        <div class="moon-area">
+            <div class="moon">
+                <i class="qi-804" id="moon-icon"></i>
+                <div style="text-align: center" id="moon-phase">满月</div>
+            </div>
+            <span id="moon-phase-time">月升:18:00 <br> 月落:6:00</span>
+        </div>
+        <div class="light-area">
+            <div id="light-harm-level">🌍 波特尔光害: 9级</div>
+            <div id="light-harm-type">极重度光污染</div>
+            <div id="light-harm-sqm">SQM: 17.5</div>
+        </div>
+    </div>
+</div>
+
+<button id="chatbot-toggler">
+    <span class="material-symbols-outlined">mode_comment</span>
+    <span class="material-symbols-rounded">close</span>
+</button>
+<div class="chatbot-popup">
+
+    <!-- Chatbot Header -->
+    <div class="chat-header">
+        <div class="header-info">
+            <svg
+                    class="chatbot-logo"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="50"
+                    height="50"
+                    viewBox="0 0 1024 1024"
+            >
+                <path
+                        d="M738.3 287.6H285.7c-59 0-106.8 47.8-106.8 106.8v303.1c0 59 47.8 106.8 106.8 106.8h81.5v111.1c0 .7.8 1.1 1.4.7l166.9-110.6 41.8-.8h117.4l43.6-.4c59 0 106.8-47.8 106.8-106.8V394.5c0-59-47.8-106.9-106.8-106.9zM351.7 448.2c0-29.5 23.9-53.5 53.5-53.5s53.5 23.9 53.5 53.5-23.9 53.5-53.5 53.5-53.5-23.9-53.5-53.5zm157.9 267.1c-67.8 0-123.8-47.5-132.3-109h264.6c-8.6 61.5-64.5 109-132.3 109zm110-213.7c-29.5 0-53.5-23.9-53.5-53.5s23.9-53.5 53.5-53.5 53.5 23.9 53.5 53.5-23.9 53.5-53.5 53.5zM867.2 644.5V453.1h26.5c19.4 0 35.1 15.7 35.1 35.1v121.1c0 19.4-15.7 35.1-35.1 35.1h-26.5zM95.2 609.4V488.2c0-19.4 15.7-35.1 35.1-35.1h26.5v191.3h-26.5c-19.4 0-35.1-15.7-35.1-35.1zM561.5 149.6c0 23.4-15.6 43.3-36.9 49.7v44.9h-30v-44.9c-21.4-6.5-36.9-26.3-36.9-49.7 0-28.6 23.3-51.9 51.9-51.9s51.9 23.3 51.9 51.9z"
+                ></path>
+            </svg>
+
+            <h2 class="logo-text">AI助手</h2>
+        </div>
+        <button id="close-chatbot"
+                class="material-symbols-rounded">keyboard_arrow_down
+        </button>
+    </div>
+
+    <!-- Chatbot Body -->
+    <div class="chat-body">
+        <div class="message bot-message">
+            <svg
+                    class="bot-avatar"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="50"
+                    height="50"
+                    viewBox="0 0 1024 1024"
+            >
+                <path
+                        d="M738.3 287.6H285.7c-59 0-106.8 47.8-106.8 106.8v303.1c0 59 47.8 106.8 106.8 106.8h81.5v111.1c0 .7.8 1.1 1.4.7l166.9-110.6 41.8-.8h117.4l43.6-.4c59 0 106.8-47.8 106.8-106.8V394.5c0-59-47.8-106.9-106.8-106.9zM351.7 448.2c0-29.5 23.9-53.5 53.5-53.5s53.5 23.9 53.5 53.5-23.9 53.5-53.5 53.5-53.5-23.9-53.5-53.5zm157.9 267.1c-67.8 0-123.8-47.5-132.3-109h264.6c-8.6 61.5-64.5 109-132.3 109zm110-213.7c-29.5 0-53.5-23.9-53.5-53.5s23.9-53.5 53.5-53.5 53.5 23.9 53.5 53.5-23.9 53.5-53.5 53.5zM867.2 644.5V453.1h26.5c19.4 0 35.1 15.7 35.1 35.1v121.1c0 19.4-15.7 35.1-35.1 35.1h-26.5zM95.2 609.4V488.2c0-19.4 15.7-35.1 35.1-35.1h26.5v191.3h-26.5c-19.4 0-35.1-15.7-35.1-35.1zM561.5 149.6c0 23.4-15.6 43.3-36.9 49.7v44.9h-30v-44.9c-21.4-6.5-36.9-26.3-36.9-49.7 0-28.6 23.3-51.9 51.9-51.9s51.9 23.3 51.9 51.9z"
+                ></path>
+            </svg>
+            <div class="message-text">
+                你好! 👋 <br/>
+                你可以询问我有关天气与天文的事!
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Footer -->
+    <div class="chat-footer">
+        <form action="#" class="chat-form">
+            <textarea placeholder="Message..." class="message-input" required></textarea>
+            <div class="chat-controls">
+                <button type="button" id="emoji-picker" class="material-symbols-rounded">sentiment_satisfied
+                </button>
+                <div class="file-upload-wrapper">
+                    <input type="file" accept="images/*" id="file-input" hidden>
+                    <button type="button" id="file-upload" class="material-symbols-rounded">attach_file</button>
+                </div>
+                <button type="submit" id="send-message" class="material-symbols-rounded">arrow_upward</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<!-- linking emoji mart script for emoji picker -->
+<script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+
+<script src="scripts/init.js"></script>
+<script src="scripts/script.js"></script>
+</body>
+</html>

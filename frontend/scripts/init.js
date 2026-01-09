@@ -1,0 +1,262 @@
+// 初始化城市名称和输入框
+city_name = document.getElementById("city-name");
+city_input = document.getElementById("city-input");
+
+// 初始化天气面板
+temp = document.getElementById("temp");
+weather_icon = document.getElementById("weather-icon");
+weather_condition = document.getElementById("weather-condition");
+humidity = document.getElementById("humidity");
+air_pressure = document.getElementById("air-pressure");
+visibility = document.getElementById("visibility");
+wind_speed = document.getElementById("wind-speed");
+wind_direction = document.getElementById("wind-direction");
+cloudiness = document.getElementById("cloudiness");
+uv_index = document.getElementById("uv-index");
+time = document.getElementById("time");
+day_temp = document.querySelector(".day-temp");
+
+// 初始化天文面板
+observing_index_level = document.getElementById("observing-index-level");
+today_index_level = document.getElementById("today-observing-index-level");
+tomorrow_index_level = document.getElementById("tomorrow-observing-index-level");
+two_days_index_level = document.getElementById("two-days-observing-index-level");
+
+// 初始化侧边栏
+moon_phase = document.getElementById("moon-phase");
+moon_phase_time = document.getElementById("moon-phase-time");
+moon_icon = document.getElementById("moon-icon");
+light_harm_level = document.getElementById("light-harm-level");
+light_harm_type = document.getElementById("light-harm-type");
+light_harm_sqm = document.getElementById("light-harm-sqm");
+
+const api_url = "http://127.0.0.10:8000/test/";
+
+
+/**
+ * 将ISO 8601格式时间转换为 (YYYY-MM-DD HH时) 格式
+ * @param {string} isoTimeStr - 待转换的ISO时间字符串（如2025-12-27T11:00+08:00）
+ * @param {boolean} [padHour=true] - 小时是否补零（true=补零，如09时；false=不补零，如9时）
+ * @returns {string} 转换后的易读时间（失败返回空字符串）
+ */
+function format_time(isoTimeStr, padHour = true) {
+    // 补零工具函数（内部封装，不对外暴露）
+    const padZero = (num) => num.toString().padStart(2, '0');
+
+    try {
+        // 1. 解析ISO时间（自动识别+08:00时区）
+        const date = new Date(isoTimeStr);
+        // 校验时间是否有效（避免传入非法字符串）
+        if (isNaN(date.getTime())) {
+            console.error('格式转换失败：传入的时间字符串无效 →', isoTimeStr);
+            return '';
+        }
+
+        // 2. 提取时间字段
+        const year = date.getFullYear();
+        const month = padZero(date.getMonth() + 1); // 月份0开始，+1后补零
+        const day = padZero(date.getDate());
+        const hour = padHour ? padZero(date.getHours()) : date.getHours();
+
+        // 3. 拼接目标格式
+        return `${year}-${month}-${day} ${hour}时`;
+    } catch (error) {
+        // 捕获所有异常，避免程序崩溃
+        console.error('时间转换出错：', error.message);
+        return '';
+    }
+}
+
+
+/**
+ * 将SQM转换为波特尔光害指数（严格匹配天文通字段：极暗/很暗/较暗/尚暗/中等/较亮/很亮/极亮/极亮）
+ * @param {number} sqmValue - SQM值（单位：mag/arcsec²）
+ * @returns {Object} 转换结果：有效状态/等级/天文通名称/描述
+ */
+function convertSqmToBortle(sqmValue) {
+    // 核心映射：波特尔等级 1-9 → 天文通名称（严格按你给的顺序）
+    const BORTLE_NAME_MAP = {
+        1: '极暗',
+        2: '很暗',
+        3: '较暗',
+        4: '尚暗',
+        5: '中等',
+        6: '较亮',
+        7: '很亮',
+        8: '极亮',
+        9: '极亮'
+    };
+
+    // 等级描述（可选保留，不影响字段）
+    const DESC_MAP = {
+        1: '银河中心细节清晰，观星最佳环境',
+        2: '银河轮廓清晰，大量暗星可见',
+        3: '银河仍明显，部分暗星被遮挡',
+        4: '银河可见但亮度降低',
+        5: '银河暗淡，仅亮部可见',
+        6: '银河几乎不可见，光污染明显',
+        7: '仅能看到亮银河，大量光害',
+        8: '银河不可见，仅亮星可见',
+        9: '仅能看到最亮的几颗星，重度光污染'
+    };
+
+    // 输入验证
+    if (typeof sqmValue !== 'number' || isNaN(sqmValue)) {
+        return {
+            valid: false,
+            error: 'SQM值必须是有效数字（如 17.87）',
+            bortleLevel: null,
+            name: null,
+            description: null,
+            originalSqm: sqmValue
+        };
+    }
+
+    // 波特尔等级判断（SQM范围不变）
+    let bortleLevel;
+    if (sqmValue >= 21.7) bortleLevel = 1;
+    else if (sqmValue >= 21.3) bortleLevel = 2;
+    else if (sqmValue >= 20.8) bortleLevel = 3;
+    else if (sqmValue >= 20.4) bortleLevel = 4;
+    else if (sqmValue >= 19.8) bortleLevel = 5;
+    else if (sqmValue >= 19.2) bortleLevel = 6;
+    else if (sqmValue >= 18.4) bortleLevel = 7;
+    else if (sqmValue >= 17.5) bortleLevel = 8;
+    else bortleLevel = 9;
+
+    // 返回结果（name字段完全匹配你给的列表）
+    return {
+        valid: true,
+        error: null,
+        bortleLevel: bortleLevel,
+        name: BORTLE_NAME_MAP[bortleLevel],
+        description: DESC_MAP[bortleLevel],
+        originalSqm: sqmValue
+    };
+}
+
+
+function get_geolocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                let latitude = position.coords.latitude;
+                let longitude = position.coords.longitude;
+
+            },
+            function (error) {
+                alert("获取位置失败, 请手动输入城市名称");
+                console.error("获取位置失败:", error.message);
+            }
+        );
+    } else {
+        alert("浏览器不支持定位功能, 请手动输入城市名称");
+    }
+}
+
+// 渲染实时天气数据
+async function render_hourly_data() {
+    try {
+        const response = await axios.get(api_url + "hourly_data");
+        const data = response.data;
+        // 访问正确, 更新实时天气数据
+        if (data.code === "200") {
+            // 更新实时天气数据
+            let present_data = data["hourly"][0];
+            // 获取值
+            let time_data = present_data["fxTime"];
+            let temp_data = present_data["temp"];
+            let weather_data = present_data["text"];
+            let wind_speed_data = present_data["windSpeed"];
+            let air_pressure_data = present_data["pressure"];
+            let cloudiness_data = present_data["cloud"];
+            let humidity_data = present_data["humidity"];
+            let weather_icon_data = present_data["icon"];
+            // 格式化时间
+            time_data = format_time(time_data);
+            // 更新页面元素
+            // 更新时间
+            time.textContent = time_data;
+            // 更新温度
+            temp.innerHTML = `${temp_data} <span style="font-size: 20px;">℃</span>`;
+
+            // 更新风速
+            wind_speed.textContent = wind_speed_data + " m/s";
+            // 更新气压
+            air_pressure.textContent = air_pressure_data + " hPa";
+            // 更新云量
+            cloudiness.textContent = cloudiness_data + " %";
+            // 更新湿度
+            humidity.innerText = humidity_data + " %";
+            // 更新天气图标
+            weather_icon.className = `qi-${weather_icon_data}-fill`;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// 渲染日天气数据
+async function render_day_data() {
+    try {
+        const response = await axios.get(api_url + "day_data");
+        const data = response.data;
+        // 访问正确, 更新日天气数据
+        if (data.code === "200") {
+            let day_data = data["daily"][0];
+            moon_phase.innerText = day_data["moonPhase"];
+            moon_icon.className = `qi-${day_data["moonPhaseIcon"]}`;
+            moon_phase_time.innerHTML = `月升&nbsp;:${day_data["moonrise"]}<br>月落&nbsp;:${day_data["moonset"]}`;
+            uv_index.textContent = day_data["uvIndex"];
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function render_light_pollution_data() {
+    try {
+        const response = await axios.get(api_url + "light_pollution");
+        const data = response.data;
+        // 访问正确, 更新光害数据
+        let converted_data = convertSqmToBortle(data["brightness"]["mpsas"]);
+        light_harm_level.innerText = `🌍 波特尔光害: ${converted_data["bortleLevel"]}级`;
+        light_harm_type.innerText = `光害程度: ${converted_data["name"]}`;
+        light_harm_sqm.innerText = `SQM值: ${converted_data["originalSqm"].toFixed(2)}`;
+
+    } catch (error) {
+
+        console.error(error);
+    }
+}
+
+// TODO: 初始化页面元素
+async function init() {
+    render_hourly_data().then(
+        () => {
+            // 渲染成功后, 更新未来24小时天气数据
+            console.log("实时天气数据渲染成功");
+        }
+    );
+    render_day_data().then(
+        () => {
+            // 渲染成功后, 更新日天气数据
+            console.log("日天气数据渲染成功");
+        }
+    );
+    render_light_pollution_data().then(
+        () => {
+            // 渲染成功后, 更新光害数据
+            console.log("光害数据渲染成功");
+        }
+    );
+
+}
+
+init().then(
+    () => {
+        console.log("页面初始化完成!");
+    })
+
+
+

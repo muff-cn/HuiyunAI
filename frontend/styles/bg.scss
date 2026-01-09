@@ -1,0 +1,74 @@
+// 引入Sass内置数学模块（新版Sass必需）
+@use "sass:math";
+
+// 配置参数
+$total-layers: 5;
+$base-animation-duration: 1000s;
+$base-star-count: 1000;
+$star-color: #ffffff;
+
+// 修复后的核心函数：生成规范的随机阴影
+@function getShadows($n) {
+  $shadows: "#{random(100)}vw #{random(100)}vh #{$star-color}";
+
+  // 从1开始循环生成指定数量的星星
+  @for $n from 2 through $n {
+    $random-x: random(100);
+    $random-y: random(100);
+    $shadow-item: '#{$random-x}vw #{$random-y}vh #{$star-color}';
+    $shadows: '#{$shadows}, #{$shadow-item}';
+  }
+
+  @return unquote($shadows);
+}
+
+// 星星移动动画
+@keyframes star-move {
+  to {
+    transform: translateY(-100vh);
+  }
+}
+
+// 循环生成5层星空样式（修正变量声明顺序）
+$animation-duration: 500s;
+$star-count: 1000;
+@for $i from 1 through $total-layers {
+  // 第一步：先定义变量（关键！必须在使用前声明）
+  $star-count: floor($star-count / 2);
+  $animation-duration: $animation-duration / 2;
+  .star-layer-#{$i} {
+    $size: #{$i}px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+
+
+
+    // 第二步：再使用变量（此时$star-count已定义，无报错）
+    box-shadow: getShadows($star-count);
+    animation: star-move $animation-duration linear infinite;
+
+    // 无缝滚动伪元素
+    &::after {
+      content: "";
+      position: fixed;
+      top: 100vh;
+      left: 0;
+      width: inherit;
+      height: inherit;
+      box-shadow: inherit;
+      border-radius: 50%;
+    }
+  }
+}
+
+
+// 页面背景
+.star-layers {
+  margin: 0;
+  background-color: #000103;
+  overflow: hidden;
+}
