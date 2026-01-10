@@ -1,0 +1,163 @@
+{
+  "code": "200",
+  "location": [
+    {
+      "name": "深圳",
+      "id": "101280601",
+      "lat": "22.54700",
+      "lon": "114.08595",
+      "adm2": "深圳",
+      "adm1": "广东省",
+     "country": "中国",
+      "tz": "Asia/Shanghai",
+      "utcOffset": "+08:00",
+      "isDst": "0",
+      "type": "city",
+      "rank": "13",
+      "fxLink": "https://www.qweather.com/weather/shenzhen-101280601.html"
+    },
+    {
+      "name": "罗湖",
+      "id": "101280602",
+      "lat": "22.55534",
+      "lon": "114.12389",
+      "adm2": "深圳",
+      "adm1": "广东省",
+      "country": "中国",
+      "tz": "Asia/Shanghai",
+      "utcOffset": "+08:00",
+      "isDst": "0",
+      "type": "city",
+      "rank": "25",
+      "fxLink": "https://www.qweather.com/weather/luohu-101280602.html"
+    },
+    {
+      "name": "福田",
+      "id": "101280603",
+      "lat": "22.54101",
+      "lon": "114.05096",
+      "adm2": "深圳",
+      "adm1": "广东省",
+      "country": "中国",
+      "tz": "Asia/Shanghai",
+      "utcOffset": "+08:00",
+      "isDst": "0",
+      "type": "city",
+      "rank": "25",
+      "fxLink": "https://www.qweather.com/weather/futian-101280603.html"
+    },
+    {
+      "name": "南山",
+      "id": "101280604",
+      "lat": "22.53122",
+      "lon": "113.92943",
+      "adm2": "深圳",
+      "adm1": "广东省",
+      "country": "中国",
+      "tz": "Asia/Shanghai",
+      "utcOffset": "+08:00",
+      "isDst": "0",
+      "type": "city",
+      "rank": "25",
+      "fxLink": "https://www.qweather.com/weather/nanshan-101280604.html"
+    },
+    {
+      "name": "宝安",
+      "id": "101280605",
+      "lat": "22.56008",
+      "lon": "113.90102",
+      "adm2": "深圳",
+      "adm1": "广东省",
+      "country": "中国",
+      "tz": "Asia/Shanghai",
+      "utcOffset": "+08:00",
+      "isDst": "0",
+      "type": "city",
+      "rank": "15",
+      "fxLink": "https://www.qweather.com/weather/bao'an-101280605.html"
+    },
+    {
+      "name": "龙岗",
+      "id": "101280606",
+      "lat": "22.72151",
+      "lon": "114.25137",
+      "adm2": "深圳",
+      "adm1": "广东省",
+      "country": "中国",
+      "tz": "Asia/Shanghai",
+      "utcOffset": "+08:00",
+      "isDst": "0",
+      "type": "city",
+      "rank": "25",
+      "fxLink": "https://www.qweather.com/weather/longgang-101280606.html"
+    },
+    {
+      "name": "盐田",
+      "id": "101280607",
+      "lat": "22.55507",
+      "lon": "114.23537",
+      "adm2": "深圳",
+      "adm1": "广东省",
+      "country": "中国",
+      "tz": "Asia/Shanghai",
+      "utcOffset": "+08:00",
+      "isDst": "0",
+      "type": "city",
+      "rank": "45",
+      "fxLink": "https://www.qweather.com/weather/yantian-101280607.html"
+    },
+    {
+      "name": "龙华",
+      "id": "101280608",
+      "lat": "22.69668",
+      "lon": "114.04544",
+      "adm2": "深圳",
+      "adm1": "广东省",
+      "country": "中国",
+      "tz": "Asia/Shanghai",
+      "utcOffset": "+08:00",
+      "isDst": "0",
+      "type": "city",
+      "rank": "25",
+      "fxLink": "https://www.qweather.com/weather/longhua-101280608.html"
+    },
+    {
+      "name": "坪山",
+      "id": "101280609",
+      "lat": "22.68981",
+      "lon": "114.34818",
+      "adm2": "深圳",
+      "adm1": "广东省",
+      "country": "中国",
+      "tz": "Asia/Shanghai",
+      "utcOffset": "+08:00",
+      "isDst": "0",
+      "type": "city",
+      "rank": "35",
+      "fxLink": "https://www.qweather.com/weather/pingshan-101280609.html"
+    },
+    {
+      "name": "光明",
+      "id": "101280610",
+      "lat": "22.74875",
+      "lon": "113.93606",
+      "adm2": "深圳",
+      "adm1": "广东省",
+      "country": "中国",
+      "tz": "Asia/Shanghai",
+      "utcOffset": "+08:00",
+      "isDst": "0",
+      "type": "city",
+      "rank": "40",
+      "fxLink": "https://www.qweather.com/weather/guangming-101280610.html"
+    }
+  ],
+  "refer": {
+    "sources": [
+      "QWeather"
+    ],
+    "license": [
+      "QWeather Developers License"
+    ]
+  }
+}

@@ -1,36 +1,50 @@
+
+
 // 初始化城市名称和输入框
-city_name = document.getElementById("city-name");
-city_input = document.getElementById("city-input");
+const city_name = document.getElementById("city-name");
+const city_input = document.getElementById("city-input");
 
 // 初始化天气面板
-temp = document.getElementById("temp");
-weather_icon = document.getElementById("weather-icon");
-weather_condition = document.getElementById("weather-condition");
-humidity = document.getElementById("humidity");
-air_pressure = document.getElementById("air-pressure");
-visibility = document.getElementById("visibility");
-wind_speed = document.getElementById("wind-speed");
-wind_direction = document.getElementById("wind-direction");
-cloudiness = document.getElementById("cloudiness");
-uv_index = document.getElementById("uv-index");
-time = document.getElementById("time");
-day_temp = document.querySelector(".day-temp");
+const temp = document.getElementById("temp");
+const weather_icon = document.getElementById("weather-icon");
+const weather_condition_text = document.getElementById("weather-condition-text");
+const humidity = document.getElementById("humidity");
+const air_pressure = document.getElementById("air-pressure");
+const visibility = document.getElementById("visibility");
+const wind_speed = document.getElementById("wind-speed");
+const wind_direction = document.getElementById("wind-direction");
+const cloudiness = document.getElementById("cloudiness");
+const uv_index = document.getElementById("uv-index");
+const time = document.getElementById("time");
+const day_temp = document.getElementById("day-temp");
 
 // 初始化天文面板
-observing_index_level = document.getElementById("observing-index-level");
-today_index_level = document.getElementById("today-observing-index-level");
-tomorrow_index_level = document.getElementById("tomorrow-observing-index-level");
-two_days_index_level = document.getElementById("two-days-observing-index-level");
+const observing_index_level = document.getElementById("observing-index-level");
+const today_index_level = document.getElementById("today-observing-index-level");
+const tomorrow_index_level = document.getElementById("tomorrow-observing-index-level");
+const two_days_index_level = document.getElementById("two-days-observing-index-level");
 
 // 初始化侧边栏
-moon_phase = document.getElementById("moon-phase");
-moon_phase_time = document.getElementById("moon-phase-time");
-moon_icon = document.getElementById("moon-icon");
-light_harm_level = document.getElementById("light-harm-level");
-light_harm_type = document.getElementById("light-harm-type");
-light_harm_sqm = document.getElementById("light-harm-sqm");
+const moon_phase = document.getElementById("moon-phase");
+const moon_phase_time = document.getElementById("moon-phase-time");
+const moon_icon = document.getElementById("moon-icon");
+const light_harm_level = document.getElementById("light-harm-level");
+const light_harm_type = document.getElementById("light-harm-type");
+const light_harm_sqm = document.getElementById("light-harm-sqm");
+
+// 初始化获取用户位置弹窗
+const location_dialog = document.getElementById("location-dialog");
+const location_form = document.getElementById("location-form");
+const location_allow_button = document.getElementById("allow-location");
+const location_deny_button = document.getElementById("deny-location");
+
 
 const api_url = "http://127.0.0.10:8000/test/";
+
+// 封装print函数
+function print(message) {
+    console.log(message);
+}
 
 
 /**
@@ -136,28 +150,26 @@ function convertSqmToBortle(sqmValue) {
 }
 
 
-function get_geolocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            function (position) {
-                let latitude = position.coords.latitude;
-                let longitude = position.coords.longitude;
-
-            },
-            function (error) {
-                alert("获取位置失败, 请手动输入城市名称");
-                console.error("获取位置失败:", error.message);
-            }
-        );
-    } else {
-        alert("浏览器不支持定位功能, 请手动输入城市名称");
-    }
+async function get_geolocation() {
+    const token = '01e69e5e06e633'; // 注册获取
+    const response = await fetch(`https://ipinfo.io/json?token=${token}`);
+    const data = await response.json();
+    // loc字段为"纬度,经度"
+    print(data)
+    const [lat, lon] = data["loc"].split(',').map(Number);
+    return {
+        ip: data.ip,
+        city: data.city,
+        region: data.region,
+        coordinates: { lat, lon },
+        isp: data["org"]
+    };
 }
 
 // 渲染实时天气数据
-async function render_hourly_data() {
+async function render_hourly_data(params) {
     try {
-        const response = await axios.get(api_url + "hourly_data");
+        const response = await axios.get(api_url + "hourly_data", { params: params});
         const data = response.data;
         // 访问正确, 更新实时天气数据
         if (data.code === "200") {
@@ -172,6 +184,7 @@ async function render_hourly_data() {
             let cloudiness_data = present_data["cloud"];
             let humidity_data = present_data["humidity"];
             let weather_icon_data = present_data["icon"];
+            let wind_direction_data = present_data["windDir"];
             // 格式化时间
             time_data = format_time(time_data);
             // 更新页面元素
@@ -190,6 +203,10 @@ async function render_hourly_data() {
             humidity.innerText = humidity_data + " %";
             // 更新天气图标
             weather_icon.className = `qi-${weather_icon_data}-fill`;
+            // 更新风向
+            wind_direction.textContent = wind_direction_data;
+            // 更新天气情况
+            weather_condition_text.textContent = weather_data;
         }
     } catch (error) {
         console.error(error);
@@ -197,9 +214,9 @@ async function render_hourly_data() {
 }
 
 // 渲染日天气数据
-async function render_day_data() {
+async function render_day_data(params) {
     try {
-        const response = await axios.get(api_url + "day_data");
+        const response = await axios.get(api_url + "day_data", { params: params});
         const data = response.data;
         // 访问正确, 更新日天气数据
         if (data.code === "200") {
@@ -208,15 +225,17 @@ async function render_day_data() {
             moon_icon.className = `qi-${day_data["moonPhaseIcon"]}`;
             moon_phase_time.innerHTML = `月升&nbsp;:${day_data["moonrise"]}<br>月落&nbsp;:${day_data["moonset"]}`;
             uv_index.textContent = day_data["uvIndex"];
+            visibility.innerText = day_data["vis"] + " km";
+            day_temp.textContent = `${day_data["tempMin"]} ~ ${day_data["tempMax"]} °C`;
         }
     } catch (error) {
         console.error(error);
     }
 }
 
-async function render_light_pollution_data() {
+async function render_light_pollution_data(params) {
     try {
-        const response = await axios.get(api_url + "light_pollution");
+        const response = await axios.get(api_url + "light_pollution", { params: params});
         const data = response.data;
         // 访问正确, 更新光害数据
         let converted_data = convertSqmToBortle(data["brightness"]["mpsas"]);
@@ -230,21 +249,47 @@ async function render_light_pollution_data() {
     }
 }
 
+async function render_loc_data(params) {
+    try {
+        const response = await axios.get(api_url + "loc_data", { params: params});
+        const data = response.data;
+        // 访问正确, 更新位置数据
+        if (data.code === "200") {
+            print(data)
+            let loc_data = data["location"][0];
+            city_name.textContent = loc_data["name"];
+            return {
+                name: loc_data["name"],
+            }
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 // TODO: 初始化页面元素
 async function init() {
-    render_hourly_data().then(
+    let data = await get_geolocation();
+    // print(data.city)
+    let en_city_name = data.city
+    let city_data = await render_loc_data({city: en_city_name});
+    let params = {
+        city: city_data.name
+    }
+    render_hourly_data(params).then(
         () => {
             // 渲染成功后, 更新未来24小时天气数据
             console.log("实时天气数据渲染成功");
         }
     );
-    render_day_data().then(
+    render_day_data(params).then(
         () => {
             // 渲染成功后, 更新日天气数据
             console.log("日天气数据渲染成功");
         }
     );
-    render_light_pollution_data().then(
+    render_light_pollution_data(params).then(
         () => {
             // 渲染成功后, 更新光害数据
             console.log("光害数据渲染成功");
@@ -257,6 +302,4 @@ init().then(
     () => {
         console.log("页面初始化完成!");
     })
-
-
 

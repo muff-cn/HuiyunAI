@@ -159,5 +159,5 @@ if __name__ == '__main__':
     api = DataAPI('shenzhen')
     # data = api.hefeng_get_moon_phase()
     # print(data)
-    data = api.laysky_light_pollution()
+    data = api.city_to_location()
     print(data)

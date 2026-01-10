@@ -1,9 +1,13 @@
+
+
 import fastapi
+from fastapi import Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
 import json
 import os  # 新增：用于检查文件路径
+from data_api import DataAPI
 
 # 初始化FastAPI应用
 app = fastapi.FastAPI()
@@ -47,23 +51,25 @@ def read_json_file(file_path):
 
 # ========== 业务接口 ==========
 @app.get("/test/day_data")
-def test_day_data():
+def test_day_data(city: str = Query("深圳")):
     return read_json_file("test_data/test_day_data.json")
 
 @app.get("/test/hourly_data")
-def test_hourly_data():
+def test_hourly_data(city: str = Query("深圳")):
     return read_json_file("test_data/test_hourly_data.json")
 
 @app.get("/test/light_pollution")
-def test_light_pollution():
+def test_light_pollution(city: str = Query("深圳")):
     return read_json_file("test_data/test_light_pollution_data.json")
+
+@app.get("/test/loc_data")
+def test_loc_data(city: str = Query("深圳")):
+    return read_json_file("test_data/test_loc_data.json")
 
 # ========== 修复：启动参数（适配文件名） ==========
 if __name__ == "__main__":
-    # 关键："server:app" 中的 "server" 要和你的文件名一致！
-    # 比如文件名为 main.py → 改为 "main:app"；文件名为 server.py → 保留 "server:app"
     uvicorn.run(
-        "server:app",  # 假设你的文件名为main.py，需根据实际修改！
+        "server:app",
         host="127.0.0.10",
         port=8000,
         reload=True  # 热重载，开发环境推荐
