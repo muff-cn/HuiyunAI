@@ -52,6 +52,7 @@
     /*align-items: center;*/
     /*justify-content: center;*/
 }
+
 .basic-weather-info {
     color: white;
     display: flex;
@@ -71,6 +72,7 @@
     text-align: center;
     margin-left: 30px;
 }
+
 .basic-weather-info > .weather-condition {
     padding-top: 30px;
     font-size: 20px;
@@ -80,6 +82,7 @@
     margin-left: 30px;
 
 }
+
 .basic-weather-info > .time {
     font-size: 16px;
     font-weight: 400;
@@ -88,9 +91,11 @@
     /*text-align: center;*/
     margin-left: auto;
 }
+
 .ai-weather {
     margin: 30px 0 40px 0;
 }
+
 .ai-weather > button {
     width: 200px;
     height: 40px;
@@ -105,15 +110,18 @@
     align-items: center;
     justify-content: space-evenly;
 }
+
 .ai-weather > button:hover {
     cursor: pointer;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
 }
+
 .weather-box {
     /*margin-top: 20px;*/
     display: flex;
     justify-content: space-between;
 }
+
 .weather-item {
     width: 50px;
     height: 50px;
@@ -141,6 +149,7 @@
     border-right: 1px solid rgba(255, 255, 255, 0.3);
     padding: 50px 50px;
 }
+
 .astron-index {
     display: flex;
     flex-direction: column;
@@ -150,14 +159,16 @@
     border-radius: 20px;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
-.astron-index > .index-title{
+
+.astron-index > .index-title {
     height: 20%;
     /*background-color: #26243C;*/
     border-radius: 20px 20px 0 0;
     text-align: center;
     line-height: 36px;
 }
-.astron-index > .index-value{
+
+.astron-index > .index-value {
     height: 80%;
     width: 180px;
     font-size: 90px;
@@ -166,6 +177,7 @@
     text-align: center;
 
 }
+
 .astron-index > .index-value > span {
     font-size: 40px;
 }
@@ -174,6 +186,7 @@
     display: flex;
 
 }
+
 .astron-index-level-box {
     margin-left: 100px;
     height: 150px;
@@ -183,21 +196,24 @@
     align-items: center;
     justify-content: center;
 }
+
 .astron-index-level {
     height: 50px;
     width: 100px;
     border-radius: 25px;
-    background-color: #425B5F;
-    color: #7BD589;
+    /*background-color: #425B5F;*/
+    /*color: #7BD589;*/
     font-size: 20px;
     font-weight: 500;
     text-align: center;
     line-height: 50px;
 }
+
 .astron-left-bottom {
     margin-top: 30px;
     display: flex;
 }
+
 .astron-left-bottom > button {
     width: 200px;
     height: 40px;
@@ -212,10 +228,12 @@
     align-items: center;
     justify-content: space-evenly;
 }
+
 .astron-left-bottom > button:hover {
     cursor: pointer;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
 }
+
 .stellarium {
     margin-left: 100px;
     width: 100px;
@@ -232,10 +250,12 @@
     align-items: center;
     justify-content: space-evenly;
 }
+
 .stellarium:hover {
     cursor: pointer;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
 }
+
 .astron-right {
     padding: 30px 30px;
     display: flex;
@@ -244,6 +264,7 @@
     align-items: center;
 
 }
+
 .astron-right-card {
     height: 120px;
     width: 120px;
@@ -254,16 +275,20 @@
     padding-top: 10px;
     text-align: center;
 }
+
 .astron-right-card:hover {
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
 }
+
 .astron-right-card:nth-child(1) {
     background-color: #2B2C4C;
     /*opacity: 1;*/
 }
+
 .astron-right-card:nth-child(2) {
     background-color: #393154;
 }
+
 .astron-right-card:nth-child(3) {
     background-color: #4A3154;
 }
@@ -275,12 +300,14 @@
 .astron-index-card > .index-data {
     font-size: 30px;
 }
+
 .astron-index-card > div {
     margin-top: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
 .index-level {
     width: 50px;
     height: 20px;
@@ -289,15 +316,23 @@
     text-align: center;
     line-height: 20px;
 }
-.today-index-level {
+
+.terrific {
     background-color: #425B5F;
     color: #7BD589;
 }
-.tomorrow-index-level {
+
+.average {
     background-color: #64595C;
     color: #F5E2A0;
 }
-.two-days-index-level {
+
+.terrible {
     background-color: #623E55;
     color: #F0626A;
+}
+
+.default_index_level {
+    background-color: #808080;
+    color: #fff
 }

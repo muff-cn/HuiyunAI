@@ -16,6 +16,11 @@ class DataAPI:
             "Accept-Encoding": "gzip, deflate, br"  # 支持压缩响应
         }
         self.hefeng_api_host = 'nr5ctv7egx.re.qweatherapi.com'
+        self.city_change= False
+        self.day_data = {}
+        self.hourly_data = {}
+
+        # self.light_pollution = {}
 
     # TODO: 通过心知天气api获取天气数据  (不使用)
     def xinzhi_get_weather(self, req_type) -> dict:
@@ -48,8 +53,14 @@ class DataAPI:
             # "key": keys.HEFENG_key,
             "location": self.city
         }
-        response = requests.get(url, params=params, headers=self.hefeng_headers)
-        return response.json()
+        if not self.day_data or self.date != datetime.datetime.now().strftime("%Y%m%d") or self.city_change:
+            response = requests.get(url, params=params, headers=self.hefeng_headers)
+            self.date = datetime.datetime.now().strftime("%Y%m%d")
+            self.day_data = response.json()
+            self.city_change = False
+            return response.json()
+        else:
+            return self.day_data
 
     # TODO: 使用和风天气提供的接口获取城市的id
     def city_to_location(self) -> dict:
@@ -60,23 +71,33 @@ class DataAPI:
         }
         response = requests.get(url, params=params, headers=self.hefeng_headers)
         city_data = response.json()
-        self.lat = city_data['location'][0]['lat']
-        self.lon = city_data['location'][0]['lon']
-        return city_data
+        # print(city_data)
+        try:
+            self.lat = city_data['location'][0]['lat']
+            self.lon = city_data['location'][0]['lon']
+            return city_data
+        except (KeyError, IndexError):
+            return {"error": f"城市不存在或数据格式错误：{self.city}"}
 
     # TODO: 通过和风天气API获得分时天气预报
-    def hefeng_get_hours_weather(self, hours='72h'):
+    def hefeng_get_hours_weather(self, hours='72h') -> dict:
         loc_id = self.city_to_location()["location"][0]["id"]
 
         url = f'https://{self.hefeng_api_host}/v7/weather/{hours}?location={loc_id}'
         params = {
             "location": self.city
         }
-        response = requests.get(url, params=params, headers=self.hefeng_headers)
-        return response.json()
+        if not self.hourly_data or self.date != datetime.datetime.now().strftime("%Y%m%d") or self.city_change:
+            response = requests.get(url, params=params, headers=self.hefeng_headers)
+            self.date = datetime.datetime.now().strftime("%Y%m%d")
+            self.hourly_data = response.json()
+            self.city_change = False
+            return response.json()
+        else:
+            return self.hourly_data
 
     # TODO: 通过天文通api获取光污染数据
-    def laysky_light_pollution(self, key='darkmap_key_twt'):
+    def laysky_light_pollution(self, key='darkmap_key_twt') -> dict | None:
         if not self.lat or not self.lon:
             self.city_to_location()
         # API请求地址
@@ -159,5 +180,5 @@ if __name__ == '__main__':
     api = DataAPI('shenzhen')
     # data = api.hefeng_get_moon_phase()
     # print(data)
-    data = api.city_to_location()
-    print(data)
+    # data = api.city_to_location()
+    print(api.date)

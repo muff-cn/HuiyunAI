@@ -4,26 +4,26 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>慧云AI</title>
-    <link rel="icon" href="imgs/icon.svg" type="image/svg+xml"/>
+    <link rel="icon" href="static/imgs/icon.svg" type="image/svg+xml"/>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,1,0"/>
-    <link rel="stylesheet" href="styles/style.css"/>
-    <link rel="stylesheet" href="styles/bg.css"/>
-    <link rel="stylesheet" href="styles/main-area.css"/>
+    <link rel="stylesheet" href="static/styles/style.css"/>
+    <link rel="stylesheet" href="static/styles/bg.css"/>
+    <link rel="stylesheet" href="static/styles/main-area.css"/>
     <link href="https://cdn.jsdelivr.net/npm/qweather-icons@1.8.0/font/qweather-icons.css" rel="stylesheet">
 </head>
 <body>
 <nav>
     <div class="present-city">
-        <img src="imgs/loc.svg" alt="loc" width="20" height="20">
+        <img src="static/imgs/loc.svg" alt="loc" width="20" height="20">
         <span id="city-name">深圳</span>
     </div>
     <label>
         <input type="text" placeholder="请输入城市..." id="city-input">
 
     </label>
-    <div class="search-icon">
-        <img src="imgs/search-icon.svg" alt="" width="25" height="25" style="margin-left: 10px;"/>
+    <div class="search-icon" id="search-icon">
+        <img src="static/imgs/search-icon.svg" alt="" width="25" height="25" style="margin-left: 10px;"/>
     </div>
     <div class="function-links">
         <a href="index.html">首页</a>
@@ -32,7 +32,7 @@
     </div>
     <div class="logo">
         <a href="index.html">
-            <img src="imgs/icon.svg" alt="logo" height="50"/>
+            <img src="static/imgs/icon.svg" alt="logo" height="50"/>
             <div>彗云AI</div>
         </a>
     </div>
@@ -54,7 +54,7 @@
     <div class="main-content-container">
         <div class="weather-area main-area">
             <div class="main-area-info-header">
-                <img src="./imgs/weather-icon.svg" alt="" width="30" height="30">
+                <img src="static/imgs/weather-icon.svg" alt="" width="30" height="30">
                 <span>&nbsp;&nbsp;当前天气</span>
             </div>
             <div class="weather-main-info">
@@ -70,7 +70,7 @@
                 <!--                <hr>-->
                 <div class="ai-weather">
                     <button id="ai-consult-weather">
-                        <img src="./imgs/ai-weather-icon.svg" alt="" height="30" width="30">
+                        <img src="static/imgs/ai-weather-icon.svg" alt="" height="30" width="30">
                         <span>AI天气与出行信息</span>
                     </button>
                 </div>
@@ -114,7 +114,7 @@
         </div>
         <div class="astronomy-area main-area">
             <div class="main-area-info-header">
-                <img src="./imgs/astronomy-icon.svg" alt="" width="30" height="30">
+                <img src="static/imgs/astronomy-icon.svg" alt="" width="30" height="30">
                 <span>&nbsp;&nbsp;天文信息</span>
             </div>
             <div class="astronomy-main-info">
@@ -126,13 +126,13 @@
 
                         </div>
                         <div class="astron-index-level-box">
-                            <div class="astron-index-level" id="observing-index-level">极佳</div>
+                            <div class="astron-index-level default_index_level" id="observing-index-level">极佳</div>
                         </div>
                     </div>
                     <div class="astron-left-bottom">
 
                         <button id="ai-consult-astronomy">
-                            <img src="./imgs/ai-astronomy-icon.svg" alt="" height="30" width="30">
+                            <img src="static/imgs/ai-astronomy-icon.svg" alt="" height="30" width="30">
                             <span>AI天文与观星信息</span>
                         </button>
                         <div class="stellarium">
@@ -146,19 +146,19 @@
                     <div class="astron-right-card">
                         <a href="https://www.darkmap.cn/ " target="_blank">
 
-                            <img src="./imgs/darkness-map-icon.svg" alt="" width="50" height="50">
+                            <img src="static/imgs/darkness-map-icon.svg" alt="" width="50" height="50">
                             <br>光污染地图</a>
                     </div>
                     <div class="astron-right-card">
                         <a href="https://zoom.earth/maps/satellite/" target="_blank">
 
-                            <img src="./imgs/satellite-map-icon.svg" alt="" width="50" height="50">
+                            <img src="static/imgs/satellite-map-icon.svg" alt="" width="50" height="50">
                             <br>卫星云图</a>
                     </div>
                     <div class="astron-right-card">
                         <a href="https://www.meteoblue.com/en/weather/outdoorsports/seeing" target="_blank">
 
-                            <img src="./imgs/seeing-icon.svg" alt="" width="50" height="50">
+                            <img src="static/imgs/seeing-icon.svg" alt="" width="50" height="50">
                             <br>视宁度</a>
                     </div>
 
@@ -167,21 +167,21 @@
                         <span>今日夜晚</span> <br>
                         <span class="index-data" id="today-observing-index">95</span><span>%</span>
                         <div>
-                            <div class="today-index-level index-level" id="today-observing-index-level">极佳</div>
+                            <div class="today-index-level index-level default_index_level" id="today-observing-index-level">极佳</div>
                         </div>
                     </div>
                     <div class="astron-right-card astron-index-card tomorrow-index">
                         <span>明日夜晚</span> <br>
                         <span class="index-data" id="tomorrow-observing-index">73</span><span>%</span>
                         <div>
-                            <div class="tomorrow-index-level index-level" id="tomorrow-observing-index-level">一般</div>
+                            <div class="tomorrow-index-level index-level default_index_level" id="tomorrow-observing-index-level">一般</div>
                         </div>
                     </div>
                     <div class="astron-right-card astron-index-card two-days-index">
                         <span>后日夜晚</span> <br>
                         <span class="index-data" id="two-days-observing-index">31</span><span>%</span>
                         <div>
-                            <div class="two-days-index-level index-level" id="two-days-observing-index-level">糟糕</div>
+                            <div class="two-days-index-level index-level default_index_level" id="two-days-observing-index-level">糟糕</div>
                         </div>
                     </div>
                 </div>
@@ -261,7 +261,9 @@
     <!-- Chatbot Footer -->
     <div class="chat-footer">
         <form action="#" class="chat-form">
+
             <textarea placeholder="Message..." class="message-input" required></textarea>
+
             <div class="chat-controls">
                 <button type="button" id="emoji-picker" class="material-symbols-rounded">sentiment_satisfied
                 </button>
@@ -274,11 +276,12 @@
         </form>
     </div>
 </div>
+<div class="error-toast" id="error-toast">城市不存在，请重新输入！</div>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <!-- linking emoji mart script for emoji picker -->
 <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
-
-<script src="scripts/init.js"></script>
-<script src="scripts/script.js"></script>
+<script src="static/scripts/stargazing_func.js"></script>
+<script src="static/scripts/init.js"></script>
+<script src="static/scripts/script.js"></script>
 </body>
 </html>

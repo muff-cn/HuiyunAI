@@ -231,11 +231,27 @@ nav > label > input:focus, nav > label > input:hover {
     line-height: 30px;
     /*justify-content: space-evenly;*/
 }
-/*.moon-and-light > .light-area > div {*/
-/*    font-size: 13px;*/
-/*    text-wrap: nowrap;*/
-/*}*/
+
 /* 侧边栏结束 */
+/* 错误提示框：独立浮层，不影响页面布局，自动消失 */
+.error-toast {
+    position: fixed; /* 固定定位，不随页面滚动 */
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%); /* 水平居中 */
+    padding: 10px 20px;
+    background: #fef0f0; /* 柔和的红色背景 */
+    color: #f56c6c; /* 文字红色 */
+    border: 1px solid #fbc4c4;
+    border-radius: 4px;
+    z-index: 9999; /* 确保在最上层，但不遮挡关键内容 */
+    /* 直接固定初始样式，不再依赖类名 */
+    opacity: 0;
+    visibility: hidden; /* 双重保障：opacity+visibility */
+    /*transition: all 0.3s ease;*/
+    transition: opacity 0.3s ease; /* 淡入淡出动画 */
+    pointer-events: none; /* 不拦截鼠标事件，不影响下方元素点击 */
+}
 /* 主区域开始 */
 
 
@@ -603,4 +619,3 @@ body.show-emoji-picker em-emoji-picker {
         width: 40px;
     }
 }
-
