@@ -1,24 +1,30 @@
+import time
+
 import fastapi
 from fastapi import Query
 from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
-import json
-import os
-from data_api import DataAPI
 from fastapi import Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+import uvicorn
+import json
+import os
+import socket
+
+from data_api import DataAPI
 
 # 初始化FastAPI应用
 app = fastapi.FastAPI()
 app.mount("/static", fastapi.staticfiles.StaticFiles(directory="../frontend/static/"), name="static")
+app.mount("/node_modules", fastapi.staticfiles.StaticFiles(directory="../frontend/node_modules/"), name="node_modules")
 
 templates = Jinja2Templates(directory="../frontend/")
 
 origins = [
     "http://localhost:63342",
-    "http://127.0.0.1:63342",
+    "http://127.0.0.10:8000",
+    "http://0.0.0.0:8000",
 ]
 
 app.add_middleware(
@@ -90,7 +96,6 @@ def api_day_data(city: str = Query("深圳")):
         api.city_change = True
 
     data = api.hefeng_get_weather()
-
     return data
 
 
@@ -121,14 +126,25 @@ def api_loc_data(city: str = Query("深圳")):
     if city != api.city:
         api.city = city
         api.city_change = True
+        # print(city)
     data = api.city_to_location()
     return data
 
 
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(('8.8.8.8', 80))
+    return s.getsockname()[0]
+
+
 if __name__ == "__main__":
+    print(f"✅ 服务器运行中！其他设备请访问：http://{get_ip()}:8000")
+    time.sleep(1)
     uvicorn.run(
         "server:app",
-        host="127.0.0.10",
-        port=80,
-        reload=True  # 热重载，开发环境推荐
+        host="0.0.0.0",
+        port=8000,
+        reload=True,  # 热重载，开发环境推荐
+        # ssl_keyfile="local.key",  # 私钥文件路径
+        # ssl_certfile="local.crt"  # 证书文件路径
     )

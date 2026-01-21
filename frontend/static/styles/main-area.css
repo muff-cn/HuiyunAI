@@ -1,14 +1,9 @@
 .main-content-container {
     height: 90vh;
-    width: 70vw;
-    margin-left: 5vw;
-    margin-right: 30vw;
+    width: 80%;
+    /*margin-left: 5vw;*/
+    /*margin-right: 30vw;*/
     border-radius: 15px;
-    /* 移除opacity属性，改为使用半透明背景色 */
-    /* opacity: 0.9; */
-    /* 使用rgba颜色值代替solid颜色，保持背景半透明但不影响子元素 */
-    /*background-color: rgba(10, 14, 23, 0.9); !* #0A0E17的rgba值，透明度0.9 *!*/
-    /*background-color: #0A0E17;*/
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -93,7 +88,7 @@
 }
 
 .ai-weather {
-    margin: 30px 0 40px 0;
+    margin: 3vh 0 3vh 0;
 }
 
 .ai-weather > button {
@@ -123,8 +118,8 @@
 }
 
 .weather-item {
-    width: 50px;
-    height: 50px;
+    width: 5vw;
+    height: 5vh;
     /*background-color: #fff;*/
     color: white;
     /*border-right: 1px solid rgba(255, 255, 255, 0.3);*/
@@ -188,7 +183,7 @@
 }
 
 .astron-index-level-box {
-    margin-left: 100px;
+    margin-left: 4vw;
     height: 150px;
     width: 150px;
 
@@ -210,7 +205,7 @@
 }
 
 .astron-left-bottom {
-    margin-top: 30px;
+    margin-top: 1.5vh;
     display: flex;
 }
 
@@ -235,15 +230,18 @@
 }
 
 .stellarium {
-    margin-left: 100px;
-    width: 100px;
+    /*position: absolute;*/
+    /*right: 10%;*/
+    /*transform: translateX(-50%);*/
+    margin-left: 80px;
+    width: 5vw;
     height: 40px;
     border-radius: 20px;
     border: none;
     /*background: linear-gradient(to right, #7b1fa2, #311b92);*/
     background: #311b92;
     color: #fff;
-    font-size: 16px;
+    font-size: 2vh;
     font-weight: 400;
     cursor: pointer;
     display: flex;
@@ -258,22 +256,23 @@
 
 .astron-right {
     padding: 30px 30px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    align-items: center;
-
+    display: grid;
+    grid-template-columns: repeat(3, 13vh); /* 3列，每列120px */
+    grid-template-rows: repeat(2, 13vh);    /* 2行，每行120px */
+    gap: 20px;                               /* 卡片间距20px */
+    justify-content: center;                 /* 容器内居中 */
+    align-content: center;                   /* 容器内居中 */
 }
 
 .astron-right-card {
-    height: 120px;
-    width: 120px;
+    height: 100%; /* 使用100%高度填充grid单元格 */
+    width: 100%;  /* 使用100%宽度填充grid单元格 */
     background-color: rgba(0, 0, 0, 0.1);
     border-radius: 20px;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    margin-right: 20px;
     padding-top: 10px;
     text-align: center;
+    /* 移除margin-right，使用grid的gap属性控制间距 */
 }
 
 .astron-right-card:hover {

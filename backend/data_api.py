@@ -177,8 +177,9 @@ class DataAPI:
 
 
 if __name__ == '__main__':
-    api = DataAPI('shenzhen')
+    api = DataAPI('Shenzhen')
     # data = api.hefeng_get_moon_phase()
     # print(data)
-    # data = api.city_to_location()
-    print(api.date)
+    data = api.city_to_location()
+    # print(api.date)
+    print(data)

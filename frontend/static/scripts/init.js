@@ -1,5 +1,7 @@
 // 初始化城市名称和输入框
 // import axios from "axios";
+// import axios from "axios";
+
 const city_name = document.getElementById("city-name");
 const city_input = document.getElementById("city-input");
 const search_icon = document.getElementById("search-icon");
@@ -40,7 +42,7 @@ const light_harm_level = document.getElementById("light-harm-level");
 const light_harm_type = document.getElementById("light-harm-type");
 const light_harm_sqm = document.getElementById("light-harm-sqm");
 
-const api_url = "http://127.0.0.10:8000/test/";
+const api_url = "/api/";
 
 // 封装print函数
 function print(message) {
@@ -81,7 +83,7 @@ function format_time(isoTimeStr, padHour = true) {
         return '';
     }
 }
-
+// TODO: 获取当前时间（格式化）
 function getCurrentTimeWithFormat() {
     // 1. 获取原生时间数据（核心）
     const now = new Date();
@@ -98,7 +100,7 @@ function getCurrentTimeWithFormat() {
     // 2. 格式化：分钟固定00，补0处理
     const formatted = `${rawData.year}-${String(rawData.month).padStart(2, "0")}-${String(rawData.day).padStart(2, "0")}T${String(rawData.hour + 1).padStart(2, "0")}:00+08:00`;
 
-    return { rawData, formatted };
+    return {rawData, formatted};
 }
 
 /**
@@ -168,7 +170,7 @@ function convertSqmToBortle(sqmValue) {
     };
 }
 
-
+// TODO: 获取用户地理位置
 async function get_geolocation() {
     const token = '01e69e5e06e633'; // 注册获取
     const response = await fetch(`https://ipinfo.io/json?token=${token}`);
@@ -185,7 +187,7 @@ async function get_geolocation() {
     };
 }
 
-// 渲染实时天气数据
+// TODO: 渲染实时天气数据
 async function render_hourly_data(params) {
     try {
         const response = await axios.get(api_url + "hourly_data", {params: params});
@@ -194,10 +196,13 @@ async function render_hourly_data(params) {
         if (data.code === "200") {
             // 更新实时天气数据
             let present_data = null;
-            for (let i = 0; i < data["hourly"].length; i++){
-                if (data["hourly"][i]["fxTime"] === getCurrentTimeWithFormat().formatted){
+            for (let i = 0; i < data["hourly"].length; i++) {
+                if (data["hourly"][i]["fxTime"] === getCurrentTimeWithFormat().formatted) {
                     present_data = data["hourly"][i];
+                    print(i)
                     break;
+                } else if (api_url === "/test/") {
+                    present_data = data["hourly"][0];
                 }
             }
             // let present_data = data["hourly"][0];
@@ -217,7 +222,7 @@ async function render_hourly_data(params) {
             // 更新时间
             time.textContent = time_data;
             // 更新温度
-            temp.innerHTML = `${temp_data} <span style="font-size: 20px;">℃</span>`;
+            temp.innerHTML = `${temp_data}<span style="font-size: 20px; margin-left: 5px;">℃</span>`;
 
             // 更新风速
             wind_speed.textContent = wind_speed_data + " m/s";
@@ -239,7 +244,7 @@ async function render_hourly_data(params) {
     }
 }
 
-// 渲染日天气数据
+// TODO: 渲染日天气数据
 async function render_day_data(params) {
     try {
         const response = await axios.get(api_url + "day_data", {params: params});
@@ -249,7 +254,7 @@ async function render_day_data(params) {
             let day_data = data["daily"][0];
             moon_phase.innerText = day_data["moonPhase"];
             moon_icon.className = `qi-${day_data["moonPhaseIcon"]}`;
-            moon_phase_time.innerHTML = `月升&nbsp;:${day_data["moonrise"]}<br>月落&nbsp;:${day_data["moonset"]}`;
+            moon_phase_time.innerHTML = `月升:&nbsp${day_data["moonrise"]}<br>月落:&nbsp;${day_data["moonset"]}`;
             uv_index.textContent = day_data["uvIndex"];
             visibility.innerText = day_data["vis"] + " km";
             day_temp.textContent = `${day_data["tempMin"]} ~ ${day_data["tempMax"]} °C`;
@@ -259,7 +264,7 @@ async function render_day_data(params) {
     }
 }
 
-// 渲染光害数据
+// TODO: 渲染光害数据
 async function render_light_pollution_data(params) {
     try {
         const response = await axios.get(api_url + "light_pollution", {params: params});
@@ -276,7 +281,7 @@ async function render_light_pollution_data(params) {
     }
 }
 
-// 渲染位置数据
+// TODO: 渲染位置数据
 async function render_loc_data(params) {
     try {
         const response = await axios.get(api_url + "loc_data", {params: params});
@@ -298,7 +303,7 @@ async function render_loc_data(params) {
     }
 }
 
-// 处理搜索按钮点击事件
+// TODO: 处理搜索按钮点击事件
 async function handle_search() {
     // print("点击搜索按钮")
     const city_name = city_input.value.trim();
@@ -324,9 +329,9 @@ async function handle_search() {
 
 }
 
+// 错误提示框定时器变量
 let toast_timer = null;
-
-// 显示错误提示框（自动消失，不影响其他元素）
+// TODO: 显示错误提示框（自动消失，不影响其他元素）
 function show_error_toast(text) {
     if (toast_timer) {
         clearTimeout(toast_timer);
@@ -344,6 +349,7 @@ function show_error_toast(text) {
     }, 3000);
 }
 
+// TODO: 计算观星指数描述
 function calc_index_level(index) {
     if (index >= 80) {
         return ["极佳", "terrific"];

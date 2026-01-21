@@ -128,7 +128,7 @@ const handleOutgoingMessage = (e) => {
         const incomingMessageDiv = createMessageElement(messageContent, "bot-message", "thinking");
         chatBody.appendChild(incomingMessageDiv);
         chatBody.scrollTo({top: chatBody.scrollHeight, behavior: "smooth"});
-        generateBotResponse(incomingMessageDiv);
+        generateBotResponse(incomingMessageDiv).then();
     }, 600);
 };
 
