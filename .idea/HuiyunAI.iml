@@ -13,4 +13,7 @@
     <orderEntry type="library" name="emoji-mart" level="application" />
     <orderEntry type="library" name="qweather-icons" level="application" />
   </component>
+  <component name="PackageRequirementsSettings">
+    <option name="keepMatchingSpecifier" value="false" />
+  </component>
 </module>

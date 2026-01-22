@@ -34,8 +34,9 @@ const createMessageElement = (content, ...classes) => {
 // Generate bot response using FastAPI backend
 const generateBotResponse = async (incomingMessageDiv) => {
     const messageElement = incomingMessageDiv.querySelector(".message-text");
-
-    // Add user message to chat history
+    const city = document.getElementById("city-name").textContent;
+    
+    // Add user message to chat history (optional, backend doesn't use this)
     chatHistory.push({
         role: "user",
         parts: [
@@ -44,32 +45,42 @@ const generateBotResponse = async (incomingMessageDiv) => {
         ],
     });
 
-    // API request options
-    const requestOptions = {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            contents: chatHistory,
-        }),
-    };
-
     try {
-        // Fetch bot response from FastAPI backend
-        const response = await fetch(API_URL, requestOptions);
-        const data = await response.json();
-
+        // 构建带查询参数的URL
+        const url = new URL(API_URL, window.location.origin);
+        url.searchParams.append('city', city);
+        url.searchParams.append('prompt', userData.message);
+        
+        // 发起GET请求获取流式响应
+        const response = await fetch(url);
+        
         if (!response.ok) {
-            throw new Error(data.error || "请求失败");
+            throw new Error('API请求失败');
         }
-
-        // Display the bot response
-        messageElement.innerText = data.response;
-
-        // Add bot response to chat history
+        
+        // 获取ReadableStream并处理流式响应
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let result = '';
+        
+        // 逐块处理响应数据
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            
+            // 解码新数据并更新UI
+            const chunk = decoder.decode(value, { stream: true });
+            result += chunk;
+            messageElement.innerText = result;
+            chatBody.scrollTo({ top: chatBody.scrollHeight, behavior: "smooth" });
+        }
+        
+        // Add bot response to chat history (optional)
         chatHistory.push({
             role: "model",
-            parts: [{text: data.response}]
+            parts: [{text: result}]
         });
+        
     } catch (error) {
         console.error("API Error:", error);
         messageElement.innerText = "抱歉，我暂时无法响应您的请求。";
@@ -134,7 +145,6 @@ const handleOutgoingMessage = (e) => {
 
 // Handle Enter key press for sending messages
 messageInput.addEventListener("keydown", (e) => {
-    // 修正拼写错误：inneerWidth → innerWidth
     if (e.key === "Enter" && !e.shiftKey && window.innerWidth > 768) {
         handleOutgoingMessage(e);
     }
@@ -142,10 +152,10 @@ messageInput.addEventListener("keydown", (e) => {
 
 // Auto resize message input
 messageInput.addEventListener("input", (e) => {
-    messageInput.style.height = `${initialInputHeight}px`;
-    messageInput.style.height = `${messageInput.scrollHeight}px`;
-    // 修正选择器错误：chat-form → .chat-form
-    document.querySelector(".chat-form").style.borderRadius = messageInput.scrollHeight > initialInputHeight ? "15px" : "32px";
+    // messageInput.style.height = `${initialInputHeight}px`;
+    // messageInput.style.height = `${messageInput.scrollHeight}px`;
+    // // 修正选择器错误：chat-form → .chat-form
+    // document.querySelector(".chat-form").style.borderRadius = messageInput.scrollHeight > initialInputHeight ? "15px" : "32px";
 });
 
 // Handle file input change
@@ -203,6 +213,25 @@ closeChatbot.addEventListener("click", () => {
 });
 
 // 页面加载完成后自动打开聊天机器人
-document.addEventListener('DOMContentLoaded', () => {
+// static/scripts/script.js 中新增
+document.addEventListener("DOMContentLoaded", () => {
+    // 原有逻辑...
     document.body.classList.add('show-chatbot');
+
+    // AI天气咨询按钮
+    const weatherAIButton = document.getElementById("ai-consult-weather");
+    weatherAIButton.addEventListener("click", () => {
+        const city = document.getElementById("city-name").textContent;
+        messageInput.value = `请提供${city}的天气与出行建议`;
+        // 自动触发发送
+        sendMessageButton.click();
+    });
+
+    // AI天文咨询按钮
+    const astronomyAIButton = document.getElementById("ai-consult-astronomy");
+    astronomyAIButton.addEventListener("click", () => {
+        const city = document.getElementById("city-name").textContent;
+        messageInput.value = `请提供${city}的天文观星建议（含月相、光污染、视宁度）`;
+        sendMessageButton.click();
+    });
 });

@@ -304,7 +304,6 @@ body.show-chatbot #chatbot-toggler span:last-child {
 
 .chatbot-popup {
     position: fixed;
-    /*height: 80vh;*/
     right: 25px;
     bottom: 90px;
     width: 420px;
@@ -318,6 +317,9 @@ body.show-chatbot #chatbot-toggler span:last-child {
     pointer-events: none;
     box-shadow: 0 0 128px rgba(0, 0, 0, 0.1), 0 32px 64px -48px rgba(0, 0, 0, 0.5);
     transition: all 0.1s ease;
+    /* 新增：设置为弹性布局，垂直排列 */
+    display: flex;
+    flex-direction: column;
 }
 
 body.show-chatbot .chatbot-popup {
@@ -378,12 +380,14 @@ body.show-chatbot .chatbot-popup {
     padding: 25px 22px;
     display: flex;
     gap: 20px;
-    height: 400px;
-    margin-bottom: 82px;
+    /* 移除固定高度：height: 400px; */
+    /* 移除导致重合的 margin-bottom: 82px; */
     overflow-y: auto;
     flex-direction: column;
     scrollbar-width: thin;
     scrollbar-color: #ccccf5 transparent;
+    /* 新增：自动填充容器剩余高度 */
+    flex: 1;
 }
 
 .chat-body .message {
@@ -480,11 +484,12 @@ body.show-chatbot .chatbot-popup {
 }
 
 .chat-footer {
-    position: absolute;
-    bottom: 0;
+    position: relative; /* 替换 absolute 为 relative，避免脱离文档流 */
     width: 100%;
     background: #3d39ac;
     padding: 15px 22px 20px;
+    /* 新增：固定底部，防止滚动时位移 */
+    flex-shrink: 0;
 }
 
 .chat-footer .chat-form {
@@ -635,7 +640,8 @@ body.show-emoji-picker em-emoji-picker {
         border-radius: 0;
         height: 100vh;
         opacity: 1;
-        display: block;
+        display: flex; /* 确保移动端也是 flex 布局 */
+        flex-direction: column;
     }
 
     nav, .main-container, .star-layers, .side-container, #chatbot-toggler, #close-chatbot {
@@ -654,10 +660,9 @@ body.show-emoji-picker em-emoji-picker {
     }
 
     .chat-body {
-        height: 100vh;
+        height: auto; /* 移除移动端固定高度，改用 flex 填充 */
         margin-bottom: 0;
-        opacity: 1;
-
+        flex: 1; /* 新增：填充剩余空间 */
     }
 
     .chat-body .message .message-text {

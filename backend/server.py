@@ -5,12 +5,15 @@ from fastapi import Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Request
 from fastapi.responses import HTMLResponse
+from fastapi.responses import StreamingResponse
+# import asyncio
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 import json
 import os
 import socket
+
 
 from data_api import DataAPI
 
@@ -129,6 +132,36 @@ def api_loc_data(city: str = Query("深圳")):
         # print(city)
     data = api.city_to_location()
     return data
+
+@app.get("/api/chat")
+def api_ai_data(
+        city: str = Query("深圳"),
+        prompt: str = Query("分析这几天的天气/观星条件怎么样？")  # 默认提问
+):
+    global api
+    # 切换城市（复用原有逻辑）
+    if city != api.city:
+        api.city = city
+        api.city_change = True
+
+    # 调用AI方法（生成器），包装为异步生成器适配StreamingResponse
+    async def ai_stream_generator():
+        try:
+            # 遍历AI返回的流式数据
+            for chunk in api.ai_data(prompt):
+                if chunk:
+                    yield chunk  # 逐段返回AI输出
+                    # await asyncio.sleep(0.01)  # 避免输出过快（可选）
+        except Exception as e:
+            yield ''
+            print(f"AI调用失败：{str(e)}")
+
+    # 返回流式响应，指定媒体类型为文本
+    return StreamingResponse(
+        ai_stream_generator(),
+        media_type="text/plain; charset=utf-8"
+    )
+
 
 
 def get_ip():

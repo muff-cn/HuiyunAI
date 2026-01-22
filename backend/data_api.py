@@ -1,7 +1,9 @@
 import json
 import datetime
+
 import requests
 import api_keys as keys
+from openai import OpenAI, OpenAIError
 
 
 class DataAPI:
@@ -16,33 +18,11 @@ class DataAPI:
             "Accept-Encoding": "gzip, deflate, br"  # 支持压缩响应
         }
         self.hefeng_api_host = 'nr5ctv7egx.re.qweatherapi.com'
-        self.city_change= False
+        self.city_change = False
         self.day_data = {}
         self.hourly_data = {}
 
         # self.light_pollution = {}
-
-    # TODO: 通过心知天气api获取天气数据  (不使用)
-    def xinzhi_get_weather(self, req_type) -> dict:
-        present_weather_url = "https://api.seniverse.com/v3/weather/now.json"
-        future_weather_url = "https://api.seniverse.com/v3/weather/daily.json"
-        test_present_weather_params = {
-            "key": keys.XINZHI_key,
-            "location": self.city,
-
-        }
-        test_future_weather_params = {
-            "key": keys.XINZHI_key,
-            "location": self.city,
-            "days": "15",
-
-        }
-        info_dict = {
-            "present": present_weather_url,
-            "future": future_weather_url
-        }
-        response = requests.get(info_dict[req_type], params=test_future_weather_params)
-        return response.json()
 
     # TODO: 使用和风天气api获取天气预测数据
     def hefeng_get_weather(self, days='15d') -> dict:
@@ -175,11 +155,54 @@ class DataAPI:
         response = requests.get(url, params=params, headers=self.hefeng_headers)
         return response.json()
 
+    # TODO: 通过通义千问模型解析数据
+    def ai_data(self, prompt: str):
+        url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+        client = OpenAI(
+            # 若没有配置环境变量，请用百炼API Key将下行替换为：api_key="sk-xxx"
+            # 新加坡/弗吉尼亚和北京地域的API Key不同。获取API Key：https://www.alibabacloud.com/help/zh/model-studio/get-api-key
+            api_key=keys.QWEN_key,
+            # 以下为新加坡/弗吉尼亚地域base_url，若使用北京地域的模型，需将base_url替换为：https://dashscope.aliyuncs.com/compatible-mode/v1
+            base_url=url,
+        )
+        user_data = self.hefeng_get_hours_weather()
+        json_str = json.dumps(user_data, ensure_ascii=False, indent=2)
+        try:
+            with open('system_prompt.txt', 'r', encoding='utf-8') as f:
+                system_prompt = f.read()
+
+            user_content = f"""
+            请按照以下要求处理观星/气象数据(可能置空)：
+            {prompt}
+            
+            观星/气象数据（JSON格式）：
+            {json_str}
+            
+            观星光污染数据（JSON格式）：
+            {self.laysky_light_pollution()}
+            """
+            # noinspection PyTypeChecker
+            completion = client.chat.completions.create(
+                model="qwen-plus",
+                messages=[{'role': 'system', 'content': system_prompt},
+                          {'role': 'user', 'content': user_content}],
+                stream=True,
+                stream_options={"include_usage": True}
+            )
+            for chunk in completion:
+                content = chunk.model_dump()['choices'][0]['delta']['content'] or ''
+                yield content
+        except Exception or OpenAIError as e:
+            # print(f'API调用错误: {e}')
+            yield ''
+
 
 if __name__ == '__main__':
     api = DataAPI('Shenzhen')
     # data = api.hefeng_get_moon_phase()
     # print(data)
-    data = api.city_to_location()
-    # print(api.date)
-    print(data)
+    data = api.ai_data('你好啊')
+    for ck in data:
+        if ck and type(ck) == str:
+            print(ck, end='', flush=True)
+    # print(data)

@@ -83,6 +83,7 @@ function format_time(isoTimeStr, padHour = true) {
         return '';
     }
 }
+
 // TODO: 获取当前时间（格式化）
 function getCurrentTimeWithFormat() {
     // 1. 获取原生时间数据（核心）
@@ -286,6 +287,7 @@ async function render_loc_data(params) {
     try {
         const response = await axios.get(api_url + "loc_data", {params: params});
         const data = response.data;
+        print(data)
         // 访问正确, 更新位置数据
         if (data.code === "200") {
             print(data)
@@ -322,6 +324,7 @@ async function handle_search() {
                 print('更新城市为: ' + city_name)
             }
         );
+        render(params);
     } catch (error) {
         show_error_toast('网络异常或城市不存在，请重试！');
         console.error(error);
@@ -331,6 +334,7 @@ async function handle_search() {
 
 // 错误提示框定时器变量
 let toast_timer = null;
+
 // TODO: 显示错误提示框（自动消失，不影响其他元素）
 function show_error_toast(text) {
     if (toast_timer) {
@@ -380,15 +384,15 @@ async function render_stargazing_index(params) {
     // 根据观星指数更新索引等级
     let index_level = calc_index_level(stargazing_index_today.total);
     observing_index_level.innerHTML = index_level[0];
-    observing_index_level.classList.remove("default_index_level");
+    observing_index_level.classList.remove("default_index_level", "terrific", "average", "terrible");
     observing_index_level.classList.add(index_level[1]);
     today_index_level.innerHTML = index_level[0];
-    today_index_level.classList.remove("default_index_level");
+    today_index_level.classList.remove("default_index_level", "terrific", "average", "terrible");
     today_index_level.classList.add(index_level[1]);
     // 根据明日观星指数更新索引等级
     index_level = calc_index_level(stargazing_index_tomorrow.total);
     tomorrow_index_level.innerHTML = index_level[0];
-    tomorrow_index_level.classList.remove("default_index_level");
+    tomorrow_index_level.classList.remove("default_index_level", "terrific", "average", "terrible");
     tomorrow_index_level.classList.add(index_level[1]);
     // 根据后日观星指数更新索引等级
     index_level = calc_index_level(stargazing_index_two_days.total);
@@ -397,16 +401,9 @@ async function render_stargazing_index(params) {
     two_days_index_level.classList.add(index_level[1]);
 }
 
-// TODO: 初始化页面元素
-async function init() {
-    // 获取用户位置信息并渲染到页面上
-    let data = await get_geolocation();
-    // print(data.city)
-    let en_city_name = data.city
-    let city_data = await render_loc_data({city: en_city_name});
-    let params = {
-        city: city_data.name
-    }
+// TODO: 渲染
+function render(params) {
+
     render_hourly_data(params).then(
         () => {
             // 渲染成功后, 更新未来24小时天气数据
@@ -431,7 +428,21 @@ async function init() {
             console.log("观星指数数据渲染成功");
         }
     );
+}
 
+
+// TODO: 初始化页面元素
+async function init() {
+    // 获取用户位置信息并渲染到页面上
+    let data = await get_geolocation();
+    // print(data.city)
+    let en_city_name = data.city
+    let city_data = await render_loc_data({city: en_city_name});
+    print(city_data)
+    let params = {
+        city: city_data.name
+    }
+    render(params)
 }
 
 init().then(
