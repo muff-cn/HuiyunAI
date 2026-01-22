@@ -1,11 +1,12 @@
 from get_jwt import encoded_jwt as jwt
+import os
 
 # 通义千问大模型api key
-QWEN_key = ""
+QWEN_key = os.getenv("QWEN_key", "")
 # 心知天气api key
 XINZHI_key = ""
 # 和风天气api key
-HEFENG_key = ""
+HEFENG_key = os.getenv("HEFENG_key", "")
 
 # 和风天气jwt token
 HEFENG_JWT_token = jwt
