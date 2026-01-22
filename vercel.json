@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/server.py",
+      "use": "@vercel/python@latest",
+      "config": {
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.11"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "backend/server.py"
+    }
+  ],
+  "installCommand": "pip install --break-system-packages -r requirements.txt",
+  "buildCommand": "echo 'Build completed'",
+  "startCommand": "python --break-system-packages backend/server.py"
+}
