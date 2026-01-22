@@ -181,6 +181,7 @@ class DataAPI:
             观星光污染数据（JSON格式）：
             {self.laysky_light_pollution()}
             """
+            # user_content = ''
             # noinspection PyTypeChecker
             completion = client.chat.completions.create(
                 model="qwen-plus",

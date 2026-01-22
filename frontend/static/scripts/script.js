@@ -55,7 +55,8 @@ const generateBotResponse = async (incomingMessageDiv) => {
         const response = await fetch(url);
         
         if (!response.ok) {
-            throw new Error('API请求失败');
+            // throw new Error('API请求失败');
+
         }
         
         // 获取ReadableStream并处理流式响应
@@ -152,6 +153,7 @@ messageInput.addEventListener("keydown", (e) => {
 
 // Auto resize message input
 messageInput.addEventListener("input", (e) => {
+    if (e){ }
     // messageInput.style.height = `${initialInputHeight}px`;
     // messageInput.style.height = `${messageInput.scrollHeight}px`;
     // // 修正选择器错误：chat-form → .chat-form

@@ -422,7 +422,7 @@ body.show-chatbot .chatbot-popup {
     word-break: break-word;
     overflow-wrap: break-word;
     overflow: visible;
-    white-space: pre-wrap;
+    /*white-space: pre-wrap;*/
 }
 
 .chat-body .bot-message.thinking .message-text {
@@ -443,7 +443,7 @@ body.show-chatbot .chatbot-popup {
 .chat-body .bot-message .thinking-indicator {
     display: flex;
     gap: 4px;
-    padding-block: 15px;
+    padding-block: 5px;
 }
 
 .chat-body .bot-message .thinking-indicator .dot:nth-child(1) {

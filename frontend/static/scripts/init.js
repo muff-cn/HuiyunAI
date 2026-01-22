@@ -287,7 +287,7 @@ async function render_loc_data(params) {
     try {
         const response = await axios.get(api_url + "loc_data", {params: params});
         const data = response.data;
-        print(data)
+        console.log(data)
         // 访问正确, 更新位置数据
         if (data.code === "200") {
             print(data)
@@ -439,6 +439,7 @@ async function init() {
     let en_city_name = data.city
     let city_data = await render_loc_data({city: en_city_name});
     print(city_data)
+    print("初始化城市为: " )
     let params = {
         city: city_data.name
     }

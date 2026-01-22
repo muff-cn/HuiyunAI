@@ -131,6 +131,7 @@ def api_loc_data(city: str = Query("深圳")):
         api.city_change = True
         # print(city)
     data = api.city_to_location()
+    # print(city)
     return data
 
 @app.get("/api/chat")
