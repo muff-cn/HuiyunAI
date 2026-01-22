@@ -172,6 +172,8 @@ def get_ip():
 
 
 if __name__ == "__main__":
+    import os
+    os.system("pip install -r requirements.txt")
     print(f"✅ 服务器运行中！其他设备请访问：http://{get_ip()}:8000")
     time.sleep(1)
     uvicorn.run(
