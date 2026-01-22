@@ -18,7 +18,7 @@ set QWEN_key=your_qwen_key
 docker compose up --build
 ```
 
-访问： http://localhost:8000
+访问： http://localhost:80
 
 生产构建（不挂载、使用构建产物）：
 

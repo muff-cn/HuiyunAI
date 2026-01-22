@@ -19,7 +19,7 @@ COPY . /app
 
 WORKDIR /app/backend
 
-EXPOSE 8000
+EXPOSE 80
 
 # 默认命令：运行 uvicorn（开发时可保留 --reload）
-CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "80"]
