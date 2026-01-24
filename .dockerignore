@@ -6,6 +6,5 @@ env/
 venv/
 .git/
 .pytest_cache/
-node_modules/
 build/
 dist/

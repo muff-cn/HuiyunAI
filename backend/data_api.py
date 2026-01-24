@@ -8,6 +8,15 @@ from openai import OpenAI, OpenAIError
 
 class DataAPI:
     def __init__(self, city: str = '深圳', lat=22.54, lon=114.05):
+        url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+
+        self.client = OpenAI(
+            # 若没有配置环境变量，请用百炼API Key将下行替换为：api_key="sk-xxx"
+            # 新加坡/弗吉尼亚和北京地域的API Key不同。获取API Key：https://www.alibabacloud.com/help/zh/model-studio/get-api-key
+            api_key=keys.QWEN_key,
+            # 以下为新加坡/弗吉尼亚地域base_url，若使用北京地域的模型，需将base_url替换为：https://dashscope.aliyuncs.com/compatible-mode/v1
+            base_url=url,
+        )
         self.city = city
         self.lat = f'{lat:.2f}'
         self.lon = f'{lon:.2f}'
@@ -157,33 +166,24 @@ class DataAPI:
 
     # TODO: 通过通义千问模型解析数据
     def ai_data(self, prompt: str):
-        url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-        client = OpenAI(
-            # 若没有配置环境变量，请用百炼API Key将下行替换为：api_key="sk-xxx"
-            # 新加坡/弗吉尼亚和北京地域的API Key不同。获取API Key：https://www.alibabacloud.com/help/zh/model-studio/get-api-key
-            api_key=keys.QWEN_key,
-            # 以下为新加坡/弗吉尼亚地域base_url，若使用北京地域的模型，需将base_url替换为：https://dashscope.aliyuncs.com/compatible-mode/v1
-            base_url=url,
-        )
-        user_data = self.hefeng_get_hours_weather()
+
+        user_data = self.hefeng_get_hours_weather()['hourly']
         json_str = json.dumps(user_data, ensure_ascii=False, indent=2)
+        light_pollution_data = self.laysky_light_pollution()
+        light_pollution_data = {k: v for k, v in light_pollution_data.items() if
+                                k not in ['year', 'dataVersion', 'timeStamp']}
         try:
             with open('system_prompt.txt', 'r', encoding='utf-8') as f:
                 system_prompt = f.read()
-
-            user_content = f"""
-            请按照以下要求处理观星/气象数据(可能置空)：
-            {prompt}
-            
-            观星/气象数据（JSON格式）：
-            {json_str}
-            
-            观星光污染数据（JSON格式）：
-            {self.laysky_light_pollution()}
-            """
+            user_content = f"请按照以下要求处理观星/气象数据(可能置空)：\n"
+            f"{prompt}\n"
+            "观星/气象数据：\n"
+            f"{json_str}\n"
+            "观星光污染数据：\n"
+            f"{light_pollution_data}\n"
             # user_content = ''
             # noinspection PyTypeChecker
-            completion = client.chat.completions.create(
+            completion = self.client.chat.completions.create(
                 model="qwen-plus",
                 messages=[{'role': 'system', 'content': system_prompt},
                           {'role': 'user', 'content': user_content}],
@@ -195,6 +195,7 @@ class DataAPI:
                 yield content
         except Exception or OpenAIError as e:
             # print(f'API调用错误: {e}')
+            if e: ...
             yield ''
 
 

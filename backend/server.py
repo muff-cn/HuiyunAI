@@ -1,7 +1,4 @@
-import os
-os.system("pip install -r requirements.txt")
 import time
-
 import fastapi
 from fastapi import Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,7 +12,6 @@ import uvicorn
 import json
 import os
 import socket
-
 
 from data_api import DataAPI
 
@@ -136,6 +132,7 @@ def api_loc_data(city: str = Query("深圳")):
     # print(city)
     return data
 
+
 @app.get("/api/chat")
 def api_ai_data(
         city: str = Query("深圳"),
@@ -166,7 +163,6 @@ def api_ai_data(
     )
 
 
-
 def get_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(('8.8.8.8', 80))
@@ -174,7 +170,6 @@ def get_ip():
 
 
 if __name__ == "__main__":
-
     print(f"✅ 服务器运行中！其他设备请访问：http://{get_ip()}:8000")
     time.sleep(1)
     uvicorn.run(
