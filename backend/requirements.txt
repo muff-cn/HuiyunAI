@@ -3,3 +3,5 @@ fastapi
 uvicorn
 PyJWT
 requests
+jinja2
+cryptography

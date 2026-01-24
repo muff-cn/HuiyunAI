@@ -4,3 +4,4 @@ uvicorn
 PyJWT
 requests
 cryptography
+jinja2
