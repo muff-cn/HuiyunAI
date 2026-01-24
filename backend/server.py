@@ -15,12 +15,45 @@ import socket
 
 from data_api import DataAPI
 
+# ========== 核心修改：计算绝对路径（解决Railway路径问题） ==========
+# 1. 获取当前文件（server.py）的绝对路径（/app/backend/server.py）
+current_file_path = os.path.abspath(__file__)
+# 2. 获取backend目录的绝对路径（/app/backend/）
+backend_dir = os.path.dirname(current_file_path)
+# 3. 获取项目根目录的绝对路径（/app/）
+root_dir = os.path.dirname(backend_dir)
+# 4. 拼接前端相关目录的绝对路径（替代相对路径../frontend/）
+frontend_dir = os.path.join(root_dir, "frontend")
+static_dir = os.path.join(frontend_dir, "static")
+node_modules_dir = os.path.join(frontend_dir, "node_modules")
+
 # 初始化FastAPI应用
 app = fastapi.FastAPI()
-app.mount("/static", fastapi.staticfiles.StaticFiles(directory="../frontend/static/"), name="static")
-app.mount("/node_modules", fastapi.staticfiles.StaticFiles(directory="../frontend/node_modules/"), name="node_modules")
+# ========== 挂载静态文件（添加容错，避免目录不存在导致启动失败） ==========
+try:
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+    print(f"✅ 成功挂载静态文件目录: {static_dir}")
+except RuntimeError as e:
+    print(f"⚠️  静态文件目录不存在，跳过挂载: {e}")
+    # 可选：自动创建空目录，避免后续访问报错
+    os.makedirs(static_dir, exist_ok=True)
 
-templates = Jinja2Templates(directory="../frontend/")
+# 挂载/node_modules目录
+try:
+    app.mount("/node_modules", StaticFiles(directory=node_modules_dir), name="node_modules")
+    print(f"✅ 成功挂载node_modules目录: {node_modules_dir}")
+except RuntimeError as e:
+    print(f"⚠️  node_modules目录不存在，跳过挂载: {e}")
+    os.makedirs(node_modules_dir, exist_ok=True)
+
+# ========== 初始化模板引擎（替换相对路径为绝对路径） ==========
+try:
+    templates = Jinja2Templates(directory=frontend_dir)
+    print(f"✅ 成功加载模板目录: {frontend_dir}")
+except Exception as e:
+    print(f"⚠️  模板目录加载失败: {e}")
+    # 兜底：使用当前目录作为模板目录，避免应用崩溃
+    templates = Jinja2Templates(directory=backend_dir)
 
 origins = [
     "http://localhost:63342",
