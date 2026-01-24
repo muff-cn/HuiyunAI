@@ -224,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const weatherAIButton = document.getElementById("ai-consult-weather");
     weatherAIButton.addEventListener("click", () => {
         const city = document.getElementById("city-name").textContent;
-        messageInput.value = `请提供${city}的天气与出行建议`;
+        messageInput.value = `请根据${city}的气象条件（温度、湿度、风速、天气），并提供${city}天气解读与出行建议`;
         // 自动触发发送
         sendMessageButton.click();
     });

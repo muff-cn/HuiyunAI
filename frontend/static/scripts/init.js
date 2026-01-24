@@ -1,6 +1,5 @@
 // 初始化城市名称和输入框
-// import axios from "axios";
-// import axios from "axios";
+
 
 const city_name = document.getElementById("city-name");
 const city_input = document.getElementById("city-input");
@@ -315,8 +314,17 @@ async function handle_search() {
         return;
     }
     city_input.value = ''
-    let params = {
-        city: city_name
+    let params;
+    try {
+        params = {
+            city: city_name
+        }
+    } catch (error) {
+        show_error_toast('服务器异常, 已将城市设置为默认值');
+        params = {
+            city: "Shenzhen"
+        }
+        console.error(error);
     }
     try {
         render_loc_data(params).then(
@@ -439,7 +447,7 @@ async function init() {
     let en_city_name = data.city
     let city_data = await render_loc_data({city: en_city_name});
     print(city_data)
-    print("初始化城市为: " )
+    print("初始化城市为: ")
     let params = {
         city: city_data.name
     }
