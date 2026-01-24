@@ -196,7 +196,7 @@ class DataAPI:
         try:
             with open('system_prompt.txt', 'r', encoding='utf-8') as f:
                 system_prompt = f.read()
-            user_content = f"请按照以下要求处理观星/气象数据(可能置空)：\n{prompt}\n观星/气象数据：\n{json_str}\n观星光污染数据：\n{light_pollution_data}\n"
+            user_content = f"请按照以下要求处理观星/气象数据(可能置空或无意义)：\n{prompt}\n观星/气象数据：\n{json_str}\n观星光污染数据：\n{light_pollution_data}\n城市：{self.city}\n当前时间：{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
             # noinspection PyTypeChecker
             completion = self.client.chat.completions.create(
                 model="qwen-plus",

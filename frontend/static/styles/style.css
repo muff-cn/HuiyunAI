@@ -16,7 +16,7 @@ a {
 
 body {
     background-color: #000103;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 /*星空背景 */
@@ -595,6 +595,27 @@ body.show-emoji-picker em-emoji-picker {
         /* 可选：加上位移动画，更丰富 */
         transform: translateX(20px);
     }
+    .side-container {
+        position: static !important;
+        /*right: auto !important;*/
+        /*top: auto !important;*/
+        /*width: calc(100% - 32px) !important;*/
+        width: 90% !important;
+        margin: 16px auto;
+        height: auto !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+    }
+    .chatbot-popup {
+        position: static !important;
+        /*right: auto !important;*/
+        width: 90% !important;
+        height: 60vh !important;
+        /*margin: 16px auto;*/
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        transform: translateX(0) !important;
+    }
     .main-container {
         width: 90vw;
         margin: 0 auto;
@@ -634,11 +655,11 @@ body.show-emoji-picker em-emoji-picker {
 /* Responsive for mobile screen */
 @media screen and (max-width: 600px) {
     .chatbot-popup {
-        width: 100vw;
+        width: 100vw !important;
         right: 0;
         bottom: 0;
         border-radius: 0;
-        height: 100vh;
+        height: 100vh !important;
         opacity: 1;
         display: flex; /* 确保移动端也是 flex 布局 */
         flex-direction: column;
