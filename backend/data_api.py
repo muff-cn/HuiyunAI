@@ -1,5 +1,6 @@
 import json
 import datetime
+import logging
 
 import requests
 import api_keys as keys
@@ -36,18 +37,25 @@ class DataAPI:
     # TODO: 使用和风天气api获取天气预测数据
     def hefeng_get_weather(self, days='15d') -> dict:
         # 通过api获取城市id
-        loc_id = self.city_to_location()["location"][0]["id"]
+        loc_resp = self.city_to_location()
+        if isinstance(loc_resp, dict) and loc_resp.get("error"):
+            return loc_resp
+        loc_id = loc_resp["location"][0]["id"]
         url = f'https://{self.hefeng_api_host}/v7/weather/{days}?location={loc_id}'
-        params = {
-            # "key": keys.HEFENG_key,
-            "location": self.city
-        }
+        params = {"location": self.city}
+
         if not self.day_data or self.date != datetime.datetime.now().strftime("%Y%m%d") or self.city_change:
-            response = requests.get(url, params=params, headers=self.hefeng_headers)
-            self.date = datetime.datetime.now().strftime("%Y%m%d")
-            self.day_data = response.json()
-            self.city_change = False
-            return response.json()
+            try:
+                response = requests.get(url, params=params, headers=self.hefeng_headers, timeout=10)
+                response.raise_for_status()
+                resp_data = response.json()
+                self.date = datetime.datetime.now().strftime("%Y%m%d")
+                self.day_data = resp_data
+                self.city_change = False
+                return resp_data
+            except requests.exceptions.RequestException as e:
+                logging.exception("hefeng_get_weather 请求失败")
+                return {"error": f"请求和风天气失败: {str(e)}"}
         else:
             return self.day_data
 
@@ -58,30 +66,41 @@ class DataAPI:
             # "key": keys.HEFENG_key,
             "location": self.city
         }
-        response = requests.get(url, params=params, headers=self.hefeng_headers)
-        city_data = response.json()
-        # print(city_data)
         try:
-            self.lat = city_data['location'][0]['lat']
-            self.lon = city_data['location'][0]['lon']
-            return city_data
-        except (KeyError, IndexError):
-            return {"error": f"城市不存在或数据格式错误：{self.city}"}
+            response = requests.get(url, params=params, headers=self.hefeng_headers, timeout=10)
+            response.raise_for_status()
+            city_data = response.json()
+            try:
+                self.lat = city_data['location'][0]['lat']
+                self.lon = city_data['location'][0]['lon']
+                return city_data
+            except (KeyError, IndexError):
+                return {"error": f"城市不存在或数据格式错误：{self.city}"}
+        except requests.exceptions.RequestException as e:
+            logging.exception("city_to_location 请求失败")
+            return {"error": f"请求城市信息失败: {str(e)}"}
 
     # TODO: 通过和风天气API获得分时天气预报
     def hefeng_get_hours_weather(self, hours='72h') -> dict:
-        loc_id = self.city_to_location()["location"][0]["id"]
+        loc_resp = self.city_to_location()
+        if isinstance(loc_resp, dict) and loc_resp.get("error"):
+            return loc_resp
+        loc_id = loc_resp["location"][0]["id"]
 
         url = f'https://{self.hefeng_api_host}/v7/weather/{hours}?location={loc_id}'
-        params = {
-            "location": self.city
-        }
+        params = {"location": self.city}
         if not self.hourly_data or self.date != datetime.datetime.now().strftime("%Y%m%d") or self.city_change:
-            response = requests.get(url, params=params, headers=self.hefeng_headers)
-            self.date = datetime.datetime.now().strftime("%Y%m%d")
-            self.hourly_data = response.json()
-            self.city_change = False
-            return response.json()
+            try:
+                response = requests.get(url, params=params, headers=self.hefeng_headers, timeout=10)
+                response.raise_for_status()
+                resp_data = response.json()
+                self.date = datetime.datetime.now().strftime("%Y%m%d")
+                self.hourly_data = resp_data
+                self.city_change = False
+                return resp_data
+            except requests.exceptions.RequestException as e:
+                logging.exception("hefeng_get_hours_weather 请求失败")
+                return {"error": f"请求小时天气失败: {str(e)}"}
         else:
             return self.hourly_data
 
@@ -136,21 +155,19 @@ class DataAPI:
             return light_pol_data
 
         except requests.exceptions.Timeout:
-            print("错误：请求超时")
+            logging.exception("laysky_light_pollution 请求超时")
             return None
         except requests.exceptions.ConnectionError:
-            print("错误：网络连接失败")
+            logging.exception("laysky_light_pollution 连接失败")
             return None
         except requests.exceptions.HTTPError:
-            print(f"错误：HTTP请求失败，状态码 {response.status_code}")
-            print(f"响应内容：{response.text}")
+            logging.exception("laysky_light_pollution HTTP 错误")
             return None
         except json.JSONDecodeError:
-            print("错误：返回数据不是有效的JSON格式")
-            print(f"响应内容：{response.text}")
+            logging.exception("laysky_light_pollution JSON解析失败")
             return None
-        except Exception as e:
-            print(f"未知错误：{str(e)}")
+        except Exception or requests.exceptions.RequestException as e:
+            logging.exception("laysky_light_pollution 未知错误")
             return None
 
     # TODO: 通过和风天气API获取月相 (不使用, 日数据中已有月相信息)
@@ -166,22 +183,20 @@ class DataAPI:
 
     # TODO: 通过通义千问模型解析数据
     def ai_data(self, prompt: str):
-
-        user_data = self.hefeng_get_hours_weather()['hourly']
+        user_hours = self.hefeng_get_hours_weather()
+        if isinstance(user_hours, dict) and user_hours.get('error'):
+            logging.exception('ai_data 获取小时数据失败')
+            yield ''
+            return
+        user_data = user_hours.get('hourly', [])
         json_str = json.dumps(user_data, ensure_ascii=False, indent=2)
-        light_pollution_data = self.laysky_light_pollution()
+        light_pollution_data = self.laysky_light_pollution() or {}
         light_pollution_data = {k: v for k, v in light_pollution_data.items() if
                                 k not in ['year', 'dataVersion', 'timeStamp']}
         try:
             with open('system_prompt.txt', 'r', encoding='utf-8') as f:
                 system_prompt = f.read()
-            user_content = f"请按照以下要求处理观星/气象数据(可能置空)：\n"
-            f"{prompt}\n"
-            "观星/气象数据：\n"
-            f"{json_str}\n"
-            "观星光污染数据：\n"
-            f"{light_pollution_data}\n"
-            # user_content = ''
+            user_content = f"请按照以下要求处理观星/气象数据(可能置空)：\n{prompt}\n观星/气象数据：\n{json_str}\n观星光污染数据：\n{light_pollution_data}\n"
             # noinspection PyTypeChecker
             completion = self.client.chat.completions.create(
                 model="qwen-plus",
@@ -191,11 +206,10 @@ class DataAPI:
                 stream_options={"include_usage": True}
             )
             for chunk in completion:
-                content = chunk.model_dump()['choices'][0]['delta']['content'] or ''
+                content = chunk.model_dump()['choices'][0]['delta'].get('content') or ''
                 yield content
-        except Exception or OpenAIError as e:
-            # print(f'API调用错误: {e}')
-            if e: ...
+        except (OpenAIError, Exception) as e:
+            logging.exception('ai_data 调用 AI 接口失败')
             yield ''
 
 

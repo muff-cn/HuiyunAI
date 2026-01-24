@@ -1,3 +1,4 @@
+import logging
 from api_keys import QWEN_key
 from openai import OpenAI, OpenAIError
 
@@ -26,6 +27,5 @@ if __name__ == '__main__':
         for chunk in completion:
             print(chunk.model_dump()['choices'][0]['delta']['content'], end='', flush=True)
             # print(chunk.model_dump())
-    except Exception or OpenAIError as e:
-        # print(f"API调用错误: {e}")
-        pass
+    except (OpenAIError, Exception) as e:
+        logging.exception('AI 调用失败')

@@ -27,6 +27,12 @@ frontend_dir = os.path.join(root_dir, "frontend")
 static_dir = os.path.join(frontend_dir, "static")
 node_modules_dir = os.path.join(frontend_dir, "node_modules")
 
+import logging
+logging.basicConfig(level=logging.INFO,
+                    filename=os.path.join(root_dir, 'backend.log'),
+                    filemode='a',
+                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
+
 # 初始化FastAPI应用
 app = fastapi.FastAPI()
 # ========== 挂载静态文件（添加容错，避免目录不存在导致启动失败） ==========
@@ -74,6 +80,11 @@ app.add_middleware(
 @app.get("/", response_class=HTMLResponse)
 def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+
+@app.get("/healthz")
+def healthz():
+    return {"status": "ok"}
 
 
 # ========== 修复：添加文件读取异常处理 ==========
@@ -186,8 +197,8 @@ def api_ai_data(
                     yield chunk  # 逐段返回AI输出
                     # await asyncio.sleep(0.01)  # 避免输出过快（可选）
         except Exception as e:
+            logging.exception("AI调用失败")
             yield ''
-            print(f"AI调用失败：{str(e)}")
 
     # 返回流式响应，指定媒体类型为文本
     return StreamingResponse(
