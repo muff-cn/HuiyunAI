@@ -172,10 +172,11 @@ def get_ip():
 if __name__ == "__main__":
     print(f"✅ 服务器运行中！其他设备请访问：http://{get_ip()}:8000")
     time.sleep(1)
+    PORT = int(os.getenv("PORT", 8000))
     uvicorn.run(
         "server:app",
         host="0.0.0.0",
-        port=8000,
+        port=PORT,
         reload=True,  # 热重载，开发环境推荐
         # ssl_keyfile="local.key",  # 私钥文件路径
         # ssl_certfile="local.crt"  # 证书文件路径
