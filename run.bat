@@ -22,7 +22,7 @@ if errorlevel 1 (
 )
 echo [INFO] 依赖安装完成，启动项目...
 echo.
-echo [INFO] ✅ 服务器运行中！局域网下其他设备请访问：http://10.117.28.10:8000
+:: echo [INFO] ✅ 服务器运行中！局域网下其他设备请访问：http://10.117.28.10:8000
 :: 启动Python项目
 python backend\server.py
 
