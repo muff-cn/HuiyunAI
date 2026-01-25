@@ -1,6 +1,8 @@
-from get_jwt import encoded_jwt as jwt
 import os
+from dotenv import load_dotenv
+from get_jwt import encoded_jwt as jwt
 
+load_dotenv()
 # 通义千问大模型api key
 QWEN_key = os.getenv("QWEN_KEY")
 # 心知天气api key
@@ -12,11 +14,5 @@ HEFENG_key = os.getenv("HEFENG_KEY")
 HEFENG_JWT_token = jwt
 
 if __name__ == '__main__':
-    # print(jwt)
-    # with open("test_data/test_loc_data.json", "r", encoding="utf-8") as f:
-    #     d = f.read().replace("'", '"')
-    # with open("test_data/test_loc_data.json", "w", encoding="utf-8") as f:
-    #     f.write(d)
-    #     print(d)
     print(QWEN_key)
     print(HEFENG_key)
