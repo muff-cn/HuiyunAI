@@ -5,15 +5,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Request
 from fastapi.responses import HTMLResponse
 from fastapi.responses import StreamingResponse
-# import asyncio
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 import json
 import os
 import socket
-
+import logging
 from data_api import DataAPI
+
+# 检测是否是uvicorn导入模式
+is_uvicorn_import = os.environ.get("RUNNING_UVICORN") == "1" or "uvicorn" in os.path.basename(os.getenv("_", ""))
 
 # ========== 核心修改：计算绝对路径（解决Railway路径问题） ==========
 # 1. 获取当前文件（server.py）的绝对路径（/app/backend/server.py）
@@ -27,7 +29,6 @@ frontend_dir = os.path.join(root_dir, "frontend")
 static_dir = os.path.join(frontend_dir, "static")
 node_modules_dir = os.path.join(frontend_dir, "node_modules")
 
-import logging
 logging.basicConfig(level=logging.INFO,
                     filename=os.path.join(root_dir, 'backend.log'),
                     filemode='a',
@@ -35,31 +36,6 @@ logging.basicConfig(level=logging.INFO,
 
 # 初始化FastAPI应用
 app = fastapi.FastAPI()
-# ========== 挂载静态文件（添加容错，避免目录不存在导致启动失败） ==========
-try:
-    app.mount("/static", StaticFiles(directory=static_dir), name="static")
-    print(f"✅ 成功挂载静态文件目录: {static_dir}")
-except RuntimeError as e:
-    print(f"⚠️  静态文件目录不存在，跳过挂载: {e}")
-    # 可选：自动创建空目录，避免后续访问报错
-    os.makedirs(static_dir, exist_ok=True)
-
-# 挂载/node_modules目录
-try:
-    app.mount("/node_modules", StaticFiles(directory=node_modules_dir), name="node_modules")
-    print(f"✅ 成功挂载node_modules目录: {node_modules_dir}")
-except RuntimeError as e:
-    print(f"⚠️  node_modules目录不存在，跳过挂载: {e}")
-    os.makedirs(node_modules_dir, exist_ok=True)
-
-# ========== 初始化模板引擎（替换相对路径为绝对路径） ==========
-try:
-    templates = Jinja2Templates(directory=frontend_dir)
-    print(f"✅ 成功加载模板目录: {frontend_dir}")
-except Exception as e:
-    print(f"⚠️  模板目录加载失败: {e}")
-    # 兜底：使用当前目录作为模板目录，避免应用崩溃
-    templates = Jinja2Templates(directory=backend_dir)
 
 origins = [
     "http://localhost:63342",
@@ -74,6 +50,41 @@ app.add_middleware(
     allow_methods=["*"],  # 允许所有HTTP方法
     allow_headers=["*"],  # 允许所有请求头
 )
+
+# ========== 挂载静态文件（添加容错，避免目录不存在导致启动失败） ==========
+try:
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+    if not is_uvicorn_import:  # 只有当不是uvicorn导入模式时才打印
+        # print(f"✅ 成功挂载静态文件目录: {static_dir}")
+        pass
+except RuntimeError as e:
+    if not is_uvicorn_import:
+        print(f"⚠️  静态文件目录不存在，跳过挂载: {e}")
+    # 可选：自动创建空目录，避免后续访问报错
+    os.makedirs(static_dir, exist_ok=True)
+
+# 挂载/node_modules目录
+try:
+    app.mount("/node_modules", StaticFiles(directory=node_modules_dir), name="node_modules")
+    if not is_uvicorn_import:
+        # print(f"✅ 成功挂载node_modules目录: {node_modules_dir}")
+        pass
+except RuntimeError as e:
+    if not is_uvicorn_import:
+        print(f"⚠️  node_modules目录不存在，跳过挂载: {e}")
+    os.makedirs(node_modules_dir, exist_ok=True)
+
+# ========== 初始化模板引擎（替换相对路径为绝对路径） ==========
+try:
+    templates = Jinja2Templates(directory=frontend_dir)
+    if not is_uvicorn_import:
+        # print(f"✅ 成功加载模板目录: {frontend_dir}")
+        pass
+except Exception as e:
+    if not is_uvicorn_import:
+        print(f"⚠️  模板目录加载失败: {e}")
+    # 兜底：使用当前目录作为模板目录，避免应用崩溃
+    templates = Jinja2Templates(directory=backend_dir)
 
 
 # ========== 接口：根路径 ==========
@@ -100,8 +111,8 @@ def read_json_file(file_path):
         return {"error": f"文件不存在：{abs_file_path}"}, 404
     except json.JSONDecodeError:
         return {"error": f"JSON文件格式错误：{abs_file_path}"}, 400
-    except Exception as e:
-        return {"error": f"读取文件失败：{str(e)}"}, 500
+    except Exception as err:
+        return {"error": f"读取文件失败：{str(err)}"}, 500
 
 
 # ========== 测试业务接口 ==========
@@ -171,9 +182,7 @@ def api_loc_data(city: str = Query("深圳")):
     if city != api.city:
         api.city = city
         api.city_change = True
-        # print(city)
     data = api.city_to_location()
-    # print(city)
     return data
 
 
@@ -195,8 +204,7 @@ def api_ai_data(
             for chunk in api.ai_data(prompt):
                 if chunk:
                     yield chunk  # 逐段返回AI输出
-                    # await asyncio.sleep(0.01)  # 避免输出过快（可选）
-        except Exception as e:
+        except Exception or NameError:
             logging.exception("AI调用失败")
             yield ''
 
@@ -214,14 +222,12 @@ def get_ip():
 
 
 if __name__ == "__main__":
-    print(f"✅ 服务器运行中！其他设备请访问：http://{get_ip()}:8000")
-    time.sleep(1)
     PORT = int(os.getenv("PORT", 8000))
+    print(f"✅ 服务器运行中！局域网下其他设备请访问：http://{get_ip()}:{PORT}")
+    time.sleep(1)
     uvicorn.run(
         "server:app",
         host="0.0.0.0",
         port=PORT,
-        reload=True,  # 热重载，开发环境推荐
-        # ssl_keyfile="local.key",  # 私钥文件路径
-        # ssl_certfile="local.crt"  # 证书文件路径
+        # reload=True,  # 可以重新开启热重载
     )
