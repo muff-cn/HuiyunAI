@@ -135,7 +135,7 @@ class DataAPI:
             "sec-fetch-site": "cross-site",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0"
         }
-        response = None
+        # response = None
         try:
             # 发送GET请求
             response = requests.get(
@@ -167,6 +167,7 @@ class DataAPI:
             logging.exception("laysky_light_pollution JSON解析失败")
             return None
         except Exception or requests.exceptions.RequestException as e:
+            print(f"laysky_light_pollution 未知错误: {str(e)}")
             logging.exception("laysky_light_pollution 未知错误")
             return None
 
@@ -209,6 +210,7 @@ class DataAPI:
                 content = chunk.model_dump()['choices'][0]['delta'].get('content') or ''
                 yield content
         except (OpenAIError, Exception) as e:
+            print(f"ai_data 调用 AI 接口失败: {str(e)}")
             logging.exception('ai_data 调用 AI 接口失败')
             yield ''
 
