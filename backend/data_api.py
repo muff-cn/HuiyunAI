@@ -207,8 +207,11 @@ class DataAPI:
                 stream_options={"include_usage": True}
             )
             for chunk in completion:
-                content = chunk.model_dump()['choices'][0]['delta'].get('content') or ''
-                yield content
+                try:
+                    content = chunk.model_dump()['choices'][0]['delta'].get('content') or ''
+                    yield content
+                except (KeyError, IndexError):
+                    yield ''
         except (OpenAIError, Exception) as e:
             print(f"ai_data 调用 AI 接口失败: {str(e)}")
             logging.exception('ai_data 调用 AI 接口失败')
