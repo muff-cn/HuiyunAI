@@ -446,12 +446,22 @@ async function init() {
     // print(data.city)
     let en_city_name = data.city
     let city_data = await render_loc_data({city: en_city_name});
-    print(city_data)
-    print("初始化城市为: ")
-    let params = {
-        city: city_data.name
+    // print(city_data)
+    // print("初始化城市为: ")
+    let params;
+    try {
+        params = {
+            city: city_data.name
+        }
+        render(params)
+    } catch (error) {
+        print(error)
+        show_error_toast('网络异常或城市不存在，已将城市设置为默认值');
+        params = {
+            city: "Shenzhen"
+        }
+        render(params)
     }
-    render(params)
 }
 
 init().then(
