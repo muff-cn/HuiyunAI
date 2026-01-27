@@ -222,7 +222,7 @@ def get_ip():
 
 
 if __name__ == "__main__":
-    PORT = int(os.getenv("PORT", 8000))
+    PORT = int(os.getenv("PORT", 80))
     print(f"✅ 服务器运行中！局域网下其他设备请访问：http://{get_ip()}:{PORT}")
     time.sleep(1)
     uvicorn.run(
