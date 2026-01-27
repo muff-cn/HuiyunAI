@@ -58,6 +58,21 @@ suggestions.
     ```
 2. 安装依赖:
 
-```bash
-    pip install -r requirements.txt
-```
+   ```bash
+       pip install -r requirements.txt
+   ```
+3. 配置环境变量:
+   - 创建一个`.env`文件, 并在其中添加以下内容:
+   ```bash
+   QWEN_API_KEY=your_qwen_api_key
+   HEFENG_API_KEY=your_hefeng_api_key
+   ```
+   - 替换`your_qwen_api_key`为你自己的阿里通义千问API密钥。
+   - 替换`your_hefeng_api_key`为你自己的和风天气API密钥。
+4. 运行应用:
+   ```bash
+    run.bat
+   ```
+5. 访问应用:
+   - 打开浏览器, 访问`http://localhost`
+      
