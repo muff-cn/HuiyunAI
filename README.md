@@ -62,7 +62,7 @@ suggestions.
        pip install -r requirements.txt
    ```
 3. 配置环境变量:
-   - 创建一个`.env`文件, 并在其中添加以下内容:
+   - 在`/backend`目录下创建一个`.env`文件, 并在其中添加以下内容:
    ```bash
    QWEN_API_KEY=your_qwen_api_key
    HEFENG_API_KEY=your_hefeng_api_key
